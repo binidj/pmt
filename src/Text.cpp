@@ -21,6 +21,16 @@ const char* Text::GetData() const
 	return Data;
 }
 
+char* Text::begin() const
+{
+	return Data;
+}
+
+char* Text::end() const
+{
+	return Data + Size;
+}
+
 Text::Text(const char* Buffer)
 {
 	Size = strlen(Buffer);

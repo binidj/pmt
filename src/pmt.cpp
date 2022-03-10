@@ -5,6 +5,7 @@
 #include "Text.h"
 #include "SlidingWindow.h"
 #include "KMP.h"
+#include "BoyerMoore.h"
 #include <string.h>
 #include <cstdio>
 #include <stdio.h>
@@ -28,7 +29,7 @@ int main()
 	{
 		Text text(buffer);
 		Text patt("love");
-		std::vector<size_t>Occ = KMP::Search(text, patt);
+		std::vector<size_t>Occ = BoyerMoore::Search(text, patt);
 		printf("LINE: %s", text.GetData());
 		printf("Found %zu occurences\n", Occ.size());
 		// Do algorithm

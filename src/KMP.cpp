@@ -2,9 +2,9 @@
 
 std::vector<int> KMP::Border = std::vector<int>();
 
-void KMP::GetBorder(const Text& pattern)
+const std::vector<int>& KMP::GetBorder(const Text& pattern)
 {
-	Border.assign(pattern.Length() + 1, 0);
+	std::vector<int> Border(pattern.Length() + 1);
 	Border[0] = -1;
 	int i = 1, j = 0;
 
@@ -19,6 +19,8 @@ void KMP::GetBorder(const Text& pattern)
 		i += (j - Border[j]);
 		j = std::max(0, Border[j]);
 	}
+
+	return Border;
 }
 
 const std::vector<size_t>& KMP::Search(const Text& text, const Text& pattern, bool BuildBorder)
@@ -27,7 +29,7 @@ const std::vector<size_t>& KMP::Search(const Text& text, const Text& pattern, bo
 
 	if (Border.size() == 0 || BuildBorder)
 	{
-		GetBorder(pattern);
+		Border = GetBorder(pattern);
 	}
 
 	int i = 0, j = 0;

@@ -9,6 +9,8 @@ public:
     char& operator[](const int Index);
     const char& operator[](const int Index) const;
     const char* GetData() const;
+    char* begin() const;
+    char* end() const;
     Text() { Data = nullptr, Size = 0; }
     ~Text() { delete[] Data; }
     Text(const char* Buffer);

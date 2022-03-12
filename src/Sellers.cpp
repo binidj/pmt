@@ -1,8 +1,5 @@
 #include "Sellers.h"
-#include "Text.h"
 #include <numeric>
-
-const int MAX_BUFFER_SIZE = 1024;
 
 std::vector<int> Sellers::Column = std::vector<int>();
 std::vector<int> Sellers::NextColumn = std::vector<int>();

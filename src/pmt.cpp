@@ -7,6 +7,7 @@
 #include "KMP.h"
 #include "BoyerMoore.h"
 #include "Sellers.h"
+#include "WuManber.h"
 #include <string.h>
 #include <cstdio>
 #include <stdio.h>
@@ -32,10 +33,25 @@ int main()
 	{
 		Text text(buffer);
 		Text patt("love");
-		std::vector<size_t>Occ = Sellers::Search(text, patt, 1);
+		std::vector<size_t>Occ = KMP::Search(text, patt);
+		// std::vector<size_t>Ov = KMP::Search(text, patt);
+
+		/*
+		if (Occ.size() != Ov.size())
+		{
+			printf("LINE: %s\n", text.GetData());
+		}
+		/**/
 		
 		if (Occ.size())
 		{
+			// printf("LINE: %s\n", text.GetData());
+			// if (Occ.size() != Ov.size())
+			{
+				
+				// printf("SIZES: %zu %zu\n", Occ.size(), Ov.size());
+			}
+			
 			OccAmount += Occ.size();
 			// printf("LINE: %s", text.GetData());
 			// printf("Found %zu occurences\n", Occ.size());

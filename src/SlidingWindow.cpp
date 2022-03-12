@@ -7,7 +7,7 @@ const std::vector<size_t>& SlidingWindow::Search(const Text& text, const Text& p
 	for (size_t i = 0; i <= Limit; i++)
 	{
 		size_t j = 0;
-		for (; j < pattern.Length(); j++)
+		for (; i + j < text.Length() && j < pattern.Length(); j++)
 		{
 			if (text[i + j] != pattern[j])
 			{

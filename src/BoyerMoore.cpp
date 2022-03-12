@@ -20,10 +20,7 @@ void BoyerMoore::GetGoodSuffix(const Text& pattern)
 	int PatternSize = pattern.Length();
 	
 	Text rpattern(pattern.GetData(), pattern.Length());
-	std::reverse(rpattern.begin(), rpattern.end()); // build begin/end functions
-	
-	printf("normal %s\n", pattern.GetData());
-	printf("reversed %s\n", rpattern.GetData());
+	std::reverse(rpattern.begin(), rpattern.end());
 
 	const std::vector<int> PatternBorder = KMP::GetBorder(pattern);
 	const std::vector<int> ReverseBorder = KMP::GetBorder(rpattern);

@@ -19,7 +19,7 @@ int main()
 	char buffer[MAX_BUFFER_SIZE];
 	
 	FILE* fl;
-	fopen_s(&fl, ".\\english.txt", "r");
+	fopen_s(&fl, ".\\shakespeare_all_texts_lowercase.txt", "r");
 
 	if (fl == NULL)
 	{
@@ -33,7 +33,7 @@ int main()
 	{
 		Text text(buffer);
 		Text patt("love");
-		std::vector<size_t>Occ = KMP::Search(text, patt);
+		std::vector<size_t>Occ = SlidingWindow::Search(text, patt);
 		// std::vector<size_t>Ov = KMP::Search(text, patt);
 
 		/*

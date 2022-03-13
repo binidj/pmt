@@ -4,9 +4,9 @@ const std::vector<size_t>& SlidingWindow::Search(const Text& text, const Text& p
 {
 	std::vector<size_t> Occurences;
 	int Limit = (int)text.Length() - (int)pattern.Length();
-	for (size_t i = 0; i <= Limit; i++)
+	for (int i = 0; i <= Limit; i++)
 	{
-		size_t j = 0;
+		int j = 0;
 		for (; i + j < text.Length() && j < pattern.Length(); j++)
 		{
 			if (text[i + j] != pattern[j])

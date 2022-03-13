@@ -12,7 +12,6 @@ const std::vector<int>& KMP::GetBorder(const Text& pattern)
 	{
 		while (i + j < pattern.Length() && pattern[i + j] == pattern[j])
 		{
-			printf("%d %d", i, j);
 			j++;
 			Border[i + j] = j;
 		}

@@ -8,6 +8,7 @@
 #include "BoyerMoore.h"
 #include "Sellers.h"
 #include "WuManber.h"
+#include "AhoCorasick.h"
 #include <string.h>
 #include <cstdio>
 #include <stdio.h>
@@ -27,15 +28,27 @@ int main()
 		return 0;
 	}
 
-	size_t OccAmount = 0;
+	size_t OccAmount = 0, other = 0;
 
 	while (fgets(buffer, MAX_BUFFER_SIZE, fl))
 	{
 		Text text(buffer);
 		Text patt("love");
-		std::vector<size_t>Occ = SlidingWindow::Search(text, patt);
-		// std::vector<size_t>Ov = KMP::Search(text, patt);
+		std::vector<Text> PatternSet = { "love", "death", "conscience", "romeo", "juliet" };
+		// std::vector<size_t>Occ = SlidingWindow::Search(text, patt);
+		const std::vector<std::vector<size_t>> OccSet = AhoCorasick::Search(text, PatternSet);
+		
+		// printf("OccSet size %zu\n", OccSet.size());
 
+		std::vector<size_t>Ov = KMP::Search(text, patt);
+		other += Ov.size();
+
+		for (auto& vec : OccSet)
+		{
+			// printf("vec size %zu\n", vec.size());
+			OccAmount += vec.size();
+		}
+		
 		/*
 		if (Occ.size() != Ov.size())
 		{
@@ -43,6 +56,7 @@ int main()
 		}
 		/**/
 		
+		/*
 		if (Occ.size())
 		{
 			// printf("LINE: %s\n", text.GetData());
@@ -56,9 +70,10 @@ int main()
 			// printf("LINE: %s", text.GetData());
 			// printf("Found %zu occurences\n", Occ.size());
 		}
-		// Do algorithm
+		/**/
 	}
 
+	printf("KMP: %zu\n", other);
 	printf("Found %zu occurences\n", OccAmount);
 
 	fclose(fl);

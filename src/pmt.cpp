@@ -33,21 +33,22 @@ int main()
 	while (fgets(buffer, MAX_BUFFER_SIZE, fl))
 	{
 		Text text(buffer);
-		Text patt("love");
+		Text patt("conscience");
 		std::vector<Text> PatternSet = { "love", "death", "conscience", "romeo", "juliet" };
 		
-		// std::vector<size_t>Occ = SlidingWindow::Search(text, patt);
-		const std::vector<std::vector<size_t>> OccSet = AhoCorasick::Search(text, PatternSet);
-		
-		// printf("OccSet size %zu\n", OccSet.size());
+		std::vector<size_t>Occ = WuManber::Search(text, patt, 2);
+		// const std::vector<std::vector<size_t>> OccSet = AhoCorasick::Search(text, PatternSet);
 
-		for (auto& vec : OccSet)
+		other += Occ.size();
+
+		// for (auto& vec : OccSet)
 		{
-			OccAmount += vec.size();
+			// OccAmount += vec.size();
 		}
 	}
 
 	printf("Found %zu occurences\n", OccAmount);
+	printf("%zu\n", other);
 
 	fclose(fl);
 	

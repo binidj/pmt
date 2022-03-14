@@ -1,18 +1,16 @@
 #include "WuManber.h"
 
-std::vector<std::bitset<WuManber::MAX_BITS>> WuManber::CharMasks = std::vector<std::bitset<MAX_BITS>>();
-std::vector<std::bitset<WuManber::MAX_BITS>> WuManber::Errors = std::vector<std::bitset<MAX_BITS>>();
-std::vector<std::bitset<WuManber::MAX_BITS>> WuManber::NextErrors = std::vector<std::bitset<MAX_BITS>>();
+std::vector<std::bitset<MAX_BITS>> WuManber::CharMasks = std::vector<std::bitset<MAX_BITS>>();
+std::vector<std::bitset<MAX_BITS>> WuManber::Errors = std::vector<std::bitset<MAX_BITS>>();
+std::vector<std::bitset<MAX_BITS>> WuManber::NextErrors = std::vector<std::bitset<MAX_BITS>>();
 
 void WuManber::GetCharMasks(const Text& pattern)
 {
-	CharMasks.assign(ALPHA_SIZE, std::move(std::bitset<MAX_BITS>{}.set()));
+	CharMasks.assign(ALPHABET_SIZE, std::move(std::bitset<MAX_BITS>{}.set()));
 	for (int i = 0; i < pattern.Length(); i++)
 	{
 		CharMasks[pattern[i]].set(i, 0);
 	}
-
-	char test = '’';
 }
 
 

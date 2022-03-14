@@ -5,7 +5,7 @@ AhoCorasick::State::State()
 {
 	IsFinalState = false;
 	Fail = 0;
-	std::fill(GoTo, GoTo + ALPHA_SIZE, -1);
+	std::fill(GoTo, GoTo + ALPHABET_SIZE, -1);
 	Occurences = std::vector<int>();
 }
 
@@ -43,7 +43,7 @@ void AhoCorasick::BuildGoTo(const std::vector<Text>& PatternSet)
 		FSM[cur].Occurences.emplace_back(PatternIndex);
 	}
 
-	for (int CharIndex = 0; CharIndex < ALPHA_SIZE; CharIndex++)
+	for (int CharIndex = 0; CharIndex < ALPHABET_SIZE; CharIndex++)
 	{
 		if (FSM[0].GoTo[CharIndex] == -1)
 		{
@@ -56,7 +56,7 @@ void AhoCorasick::BuildFail(const std::vector<Text>& PatternSet)
 {
 	std::queue<int> Queue;
 
-	for (int CharIndex = 0; CharIndex < ALPHA_SIZE; CharIndex++)
+	for (int CharIndex = 0; CharIndex < ALPHABET_SIZE; CharIndex++)
 	{
 		if (FSM[0].GoTo[CharIndex] > 0)
 		{
@@ -70,7 +70,7 @@ void AhoCorasick::BuildFail(const std::vector<Text>& PatternSet)
 		int CurrentState = Queue.front();
 		Queue.pop();
 
-		for (int CharIndex = 0; CharIndex < ALPHA_SIZE; CharIndex++)
+		for (int CharIndex = 0; CharIndex < ALPHABET_SIZE; CharIndex++)
 		{
 			int Successor = FSM[CurrentState].GoTo[CharIndex];
 

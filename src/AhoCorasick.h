@@ -1,8 +1,7 @@
 #pragma once
 #include "Text.h"
+#include "Constants.h"
 #include <vector>
-
-const size_t ALPHA_SIZE = 128;
 
 class AhoCorasick
 {
@@ -11,7 +10,7 @@ private:
 	{
 		bool IsFinalState;
 		int Fail;
-		int GoTo[ALPHA_SIZE];
+		int GoTo[ALPHABET_SIZE];
 		std::vector<int> Occurences;
 
 		State();

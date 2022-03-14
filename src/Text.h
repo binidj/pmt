@@ -12,7 +12,7 @@ public:
     char* begin() const;
     char* end() const;
     Text() { Data = nullptr, Size = 0; }
-    // ~Text() { delete Data; }
+    // ~Text() { delete[] Data; }
     Text(const char* Buffer);
     Text(const size_t Size);
     Text(const char* Buffer, const size_t Size);

@@ -1,9 +1,7 @@
 #include "BoyerMoore.h";
 #include "KMP.h";
 
-const int BoyerMoore::AlphabetSize = 128;
-
-std::vector<int> BoyerMoore::BadChar = std::vector<int>(AlphabetSize, -1);
+std::vector<int> BoyerMoore::BadChar = std::vector<int>(ALPHABET_SIZE, -1);
 
 std::vector<int> BoyerMoore::GoodSuffix = std::vector<int>();
 

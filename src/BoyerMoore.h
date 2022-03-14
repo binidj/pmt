@@ -1,11 +1,11 @@
 #pragma once
 #include <vector>
 #include "Text.h"
+#include "Constants.h"
 
 class BoyerMoore
 {
 private:
-    static const int AlphabetSize;
     static std::vector<int> BadChar;
     static std::vector<int> GoodSuffix;
     static void GetBadChar(const Text& pattern);

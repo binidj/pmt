@@ -11,8 +11,9 @@ public:
     const char* GetData() const;
     char* begin() const;
     char* end() const;
-    Text() { Data = nullptr, Size = 0; }
-    // ~Text() { delete[] Data; }
+    Text();
+    ~Text();
+    Text(const Text& text);
     Text(const char* Buffer);
     Text(const size_t Size);
     Text(const char* Buffer, const size_t Size);

@@ -31,6 +31,24 @@ char* Text::end() const
 	return Data + Size;
 }
 
+Text::Text()
+{
+	Data = nullptr; 
+	Size = 0;
+}
+
+Text::~Text()
+{
+	if (Data != nullptr) delete[] Data;
+}
+
+Text::Text(const Text& text)
+{
+	Size = text.Length();
+	Data = new char[Size + 1];
+	strcpy(Data, text.GetData());
+}
+
 Text::Text(const char* Buffer)
 {
 	Size = strlen(Buffer);
@@ -41,7 +59,8 @@ Text::Text(const char* Buffer)
 Text::Text(const size_t Size)
 {
 	this->Size = Size;
-	Data = new char[Size];
+	Data = new char[Size + 1];
+	Data[Size] = '\0';
 }
 
 Text::Text(const char* Buffer, size_t Size)

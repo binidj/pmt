@@ -1,17 +1,23 @@
 #include "Text.h"
 #include <iostream>
 
+void Text::Clear()
+{
+	Data = nullptr;
+	Size = 0;
+}
+
 const size_t Text::Length() const
 {
 	return Size;
 }
 
-char& Text::operator[](const int Index)
+char& Text::operator[](const size_t Index)
 {
 	return Data[Index];
 }
 
-const char& Text::operator[](const int Index) const
+const char Text::operator[](const size_t Index) const
 {
 	return Data[Index];
 }
@@ -39,33 +45,26 @@ Text::Text()
 
 Text::~Text()
 {
-	if (Data != nullptr) delete[] Data;
+	delete[] Data;
 }
 
 Text::Text(const Text& text)
 {
 	Size = text.Length();
 	Data = new char[Size + 1];
-	strcpy(Data, text.GetData());
+	memcpy(Data, text.GetData(), Size + 1);
+}
+
+Text::Text(Text&& text) noexcept
+{
+	Size = text.Length();
+	Data = text.begin();
+	text.Clear();
 }
 
 Text::Text(const char* Buffer)
 {
 	Size = strlen(Buffer);
 	Data = new char[Size + 1];
-	strcpy(Data, Buffer);
-}
-
-Text::Text(const size_t Size)
-{
-	this->Size = Size;
-	Data = new char[Size + 1];
-	Data[Size] = '\0';
-}
-
-Text::Text(const char* Buffer, size_t Size)
-{
-	this->Size = Size;
-	Data = new char[Size + 1];
-	strcpy(Data, Buffer);
+	memcpy(Data, Buffer, Size + 1);
 }

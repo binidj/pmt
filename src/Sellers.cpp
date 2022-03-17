@@ -2,11 +2,10 @@
 #include <numeric>
 
 std::vector<int> Sellers::Column = std::vector<int>();
-std::vector<int> Sellers::NextColumn = std::vector<int>();
 
 std::vector<int> Sellers::GetNext(const std::vector<int>& Column, const Text& pattern, char Ch)
 {
-	std::fill(NextColumn.begin(), NextColumn.end(), 0);
+	std::vector<int> NextColumn(pattern.Length() + 1);
 	for (int i = 1; i < NextColumn.size(); i++)
 	{
 		NextColumn[i] = std::min(Column[i] + 1, NextColumn[i-1] + 1);
@@ -20,14 +19,13 @@ const std::vector<size_t>& Sellers::Search(const Text& text, const Text& pattern
 {
 	std::vector<size_t> Occurences;
 
-	Column.assign(pattern.Length() + 1, 0);
-	NextColumn.assign(pattern.Length() + 1, 0);
+	Column.reserve(pattern.Length() + 1);
 
 	std::iota(Column.begin(), Column.end(), 0);
 
 	for (size_t i = 0; i < text.Length(); i++)
 	{
-		Column = GetNext(Column, pattern, text[i]);
+		Column = std::move(GetNext(Column, pattern, text[i]));
 		if (Column.back() <= Err)
 		{
 			Occurences.emplace_back(i);

@@ -6,7 +6,6 @@ class Sellers
 {
 private:
     static std::vector<int> Column;
-    static std::vector<int> NextColumn;
 
     static std::vector<int> GetNext(const std::vector<int>& Column, const Text& pattern, char Ch);
 public:

@@ -39,6 +39,7 @@ char* Text::end() const
 
 Text& Text::operator=(Text&& text) noexcept
 {
+	printf("Move assign\n");
 	if (this != &text)
 	{
 		delete[] Data;
@@ -62,6 +63,7 @@ Text::~Text()
 
 Text::Text(const Text& text)
 {
+	printf("Copy constructor\n");
 	Size = text.Length();
 	Data = new char[Size + 1];
 	memcpy(Data, text.GetData(), Size + 1);
@@ -69,6 +71,7 @@ Text::Text(const Text& text)
 
 Text::Text(Text&& text) noexcept
 {
+	printf("Move constructor\n");
 	Size = text.Length();
 	Data = text.begin();
 	text.Clear();
@@ -76,6 +79,7 @@ Text::Text(Text&& text) noexcept
 
 Text::Text(const char* Buffer)
 {
+	printf("Char* constructor\n");
 	Size = strlen(Buffer);
 	Data = new char[Size + 1];
 	memcpy(Data, Buffer, Size + 1);

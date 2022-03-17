@@ -20,8 +20,8 @@ void BoyerMoore::GetGoodSuffix(const Text& pattern)
 	Text rpattern(pattern);
 	std::reverse(rpattern.begin(), rpattern.end());
 
-	const std::vector<int> PatternBorder = KMP::GetBorder(pattern);
-	const std::vector<int> ReverseBorder = KMP::GetBorder(rpattern);
+	const std::vector<int> PatternBorder = std::move(KMP::GetBorder(pattern));
+	const std::vector<int> ReverseBorder = std::move(KMP::GetBorder(rpattern));
 
 	GoodSuffix.assign(PatternSize + 1, PatternSize - PatternBorder[PatternSize]);
 	for (int i = 1; i < PatternSize; i++)

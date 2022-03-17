@@ -2,7 +2,7 @@
 
 std::vector<int> KMP::Border = std::vector<int>();
 
-const std::vector<int> KMP::GetBorder(const Text& pattern)
+std::vector<int> KMP::GetBorder(const Text& pattern)
 {
 	std::vector<int> Border(pattern.Length() + 1);
 	Border[0] = -1;
@@ -28,7 +28,7 @@ const std::vector<size_t>& KMP::Search(const Text& text, const Text& pattern, bo
 
 	if (Border.size() == 0 || BuildBorder)
 	{
-		Border = GetBorder(pattern);
+		Border = std::move(GetBorder(pattern));
 	}
 
 	int i = 0, j = 0;

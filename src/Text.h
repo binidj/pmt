@@ -12,6 +12,7 @@ public:
     const char* GetData() const;
     char* begin() const;
     char* end() const;
+    Text& operator=(Text&& text) noexcept;
     Text();
     ~Text();
     Text(const Text& text);

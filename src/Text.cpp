@@ -37,6 +37,18 @@ char* Text::end() const
 	return Data + Size;
 }
 
+Text& Text::operator=(Text&& text) noexcept
+{
+	if (this != &text)
+	{
+		delete[] Data;
+		Size = text.Length();
+		Data = text.begin();
+		text.Clear();
+	}
+	return *this;
+}
+
 Text::Text()
 {
 	Data = nullptr; 

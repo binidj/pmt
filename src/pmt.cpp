@@ -9,6 +9,7 @@
 #include "Sellers.h"
 #include "WuManber.h"
 #include "AhoCorasick.h"
+#include "BenchmarkTimer.h"
 #include <string.h>
 #include <cstdio>
 #include <stdio.h>
@@ -30,20 +31,16 @@ int main()
 
 	size_t OccAmount = 0, other = 0;
 
-	while (fgets(buffer, MAX_BUFFER_SIZE, fl))
 	{
-		Text text(buffer);
-		Text patt("conscience");
-		std::vector<Text> PatternSet = { "love", "death", "conscience", "romeo", "juliet" };
-		
-		std::vector<size_t>Occ = WuManber::Search(text, patt, 2);
-		// const std::vector<std::vector<size_t>> OccSet = AhoCorasick::Search(text, PatternSet);
-
-		other += Occ.size();
-
-		// for (auto& vec : OccSet)
+		BenchmarkTimer benchmark;
+		Text patt("coward");
+		while (fgets(buffer, MAX_BUFFER_SIZE, fl))
 		{
-			// OccAmount += vec.size();
+			Text text(buffer);
+			
+			std::vector<size_t>Occ = WuManber::Search(text, patt, 2);
+			
+			other += Occ.size();
 		}
 	}
 

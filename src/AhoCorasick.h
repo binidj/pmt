@@ -11,7 +11,7 @@ private:
 		bool IsFinalState;
 		int Fail;
 		int GoTo[ALPHABET_SIZE];
-		std::vector<int> Occurences;
+		std::vector<int>* Occurences;
 
 		State();
 	};
@@ -26,5 +26,5 @@ private:
 	
 public:
 	// TODO: optimize this function
-    static const std::vector<std::vector<size_t>> Search(const Text& text, const std::vector<Text>& PatternSet, const bool Rebuild = false);
+    const static std::vector<std::pair<int,int>>& Search(const Text& text, const std::vector<Text>& PatternSet, const bool Rebuild = false);
 };

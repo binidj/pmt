@@ -35,19 +35,20 @@ int main()
 		BenchmarkTimer benchmark;
 		Text patt("coward");
 
-		std::vector<Text> PatternSet = { "love", "death", "conscience", "romeo", "juliet" };
+		std::vector<Text> PatternSet = { "love", "death", "conscience", "romeo", "juliet"};
 		while (fgets(buffer, MAX_BUFFER_SIZE, fl))
 		{
 			Text text(buffer);
 			
 			// std::vector<size_t>Occ = WuManber::Search(text, patt, 2);
-			const std::vector<std::vector<size_t>> OccSet = AhoCorasick::Search(text, PatternSet);
+			std::vector<std::pair<int, int>> OccSet = AhoCorasick::Search(text, PatternSet);
 
 			// other += Occ.size();
-			
-			for (auto& vec : OccSet)
+			OccAmount += OccSet.size();
+
+			// for (auto& vec : OccSet)
 			{
-				OccAmount += vec.size();
+				// OccAmount += vec.size();
 			}
 		}
 	}

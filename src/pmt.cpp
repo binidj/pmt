@@ -13,6 +13,8 @@
 #include <string.h>
 #include <cstdio>
 #include <stdio.h>
+#include <cstddef>
+#include <cstdint>
 
 const int MAX_BUFFER_SIZE = 1024;
 
@@ -21,7 +23,7 @@ int main()
 	char buffer[MAX_BUFFER_SIZE];
 	
 	FILE* fl;
-	fopen_s(&fl, ".\\shakespeare_all_texts_lowercase.txt", "r");
+	fl = fopen(".\\shakespeare_all_texts_lowercase.txt", "r");
 
 	if (fl == NULL)
 	{

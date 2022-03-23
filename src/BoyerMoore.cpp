@@ -1,5 +1,6 @@
 #include "BoyerMoore.h";
 #include "KMP.h";
+#include <algorithm>
 
 std::vector<int> BoyerMoore::BadChar = std::vector<int>(ALPHABET_SIZE, -1);
 

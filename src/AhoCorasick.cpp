@@ -109,7 +109,7 @@ const std::vector<std::vector<size_t>> AhoCorasick::Search(const Text& text, con
 
 	for (int i = 0; i < text.Length(); i++)
 	{
-		while (FSM[cur].GoTo[text[i]] < 0) // fix infinite loop
+		while (FSM[cur].GoTo[text[i]] < 0)
 		{
 			cur = FSM[cur].Fail;
 		}

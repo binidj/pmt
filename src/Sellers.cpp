@@ -15,8 +15,7 @@ void Sellers::GetNext(const Text& pattern, char Ch)
 	}
 }
 
-// TODO: Fix const& return types
-const std::vector<size_t>& Sellers::Search(const Text& text, const Text& pattern, const int Err)
+const std::vector<size_t> Sellers::Search(const Text& text, const Text& pattern, const int Err)
 {
 	std::vector<size_t> Occurences;
 

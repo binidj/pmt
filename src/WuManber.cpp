@@ -13,7 +13,7 @@ void WuManber::GetCharMasks(const Text& pattern)
 	}
 }
 
-const std::vector<size_t>& WuManber::Search(const Text& text, const Text& pattern, const int Err)
+const std::vector<size_t> WuManber::Search(const Text& text, const Text& pattern, const int Err)
 {
 	std::vector<size_t> Occurences;
 

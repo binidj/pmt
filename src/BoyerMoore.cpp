@@ -1,5 +1,5 @@
-#include "BoyerMoore.h";
-#include "KMP.h";
+#include "BoyerMoore.h"
+#include "KMP.h"
 #include <algorithm>
 
 std::vector<int> BoyerMoore::BadChar = std::vector<int>(ALPHABET_SIZE, -1);
@@ -35,7 +35,7 @@ void BoyerMoore::GetGoodSuffix(const Text& pattern)
 	}
 }
 
-const std::vector<size_t>& BoyerMoore::Search(const Text& text, const Text& pattern, bool BuildHeuriscts)
+const std::vector<size_t> BoyerMoore::Search(const Text& text, const Text& pattern, bool BuildHeuriscts)
 {
 	std::vector<size_t> Occurences;
 

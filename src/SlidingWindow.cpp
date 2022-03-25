@@ -1,6 +1,6 @@
 #include "SlidingWindow.h"
 
-const std::vector<size_t>& SlidingWindow::Search(const Text& text, const Text& pattern)
+const std::vector<size_t> SlidingWindow::Search(const Text& text, const Text& pattern)
 {
 	std::vector<size_t> Occurences;
 	int Limit = (int)text.Length() - (int)pattern.Length();

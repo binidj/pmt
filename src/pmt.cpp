@@ -31,9 +31,9 @@ int main(int argc, char** argv)
 {
 	int Option = -1;
 	int EditDistance = -1;
-	char PatternFile[128];
-	char AlgorithName[128];
-	char PatternArg[128];
+	char PatternFile[128] = "";
+	char AlgorithName[128] = "";
+	char PatternArg[128] = "";
 	bool PrintCount = false;
 	int BufferSize = 1024;
 	bool Help = false;
@@ -90,9 +90,9 @@ int main(int argc, char** argv)
 	int MinArgsRequired = 2;
 	const int RemainingArgs = argc - optind;
 
-	if (PatternFile != nullptr)
+	if (strcmp(PatternFile, "") != 0)
 	{
-		MinArgsRequired = 1;	
+		MinArgsRequired = 1;
 	}
 	else 
 	{
@@ -158,7 +158,7 @@ int main(int argc, char** argv)
 		std::vector<Text> PatternSet = { "love", "death", "conscience", "romeo", "juliet" };
 		while (fgets(buffer, BufferSize, fl))
 		{
-			printf("%s", buffer);
+			// printf("%s", buffer);
 			Text text(buffer);
 			
 			std::vector<size_t>Occ = std::move(SinglePatternSearch(text, patt, EditDistance, false));

@@ -1,15 +1,15 @@
 #include "WuManber.h"
 
-std::vector<std::bitset<MAX_BITS>> WuManber::CharMasks = std::vector<std::bitset<MAX_BITS>>();
-std::vector<std::bitset<MAX_BITS>> WuManber::Errors = std::vector<std::bitset<MAX_BITS>>();
-std::vector<std::bitset<MAX_BITS>> WuManber::NextErrors = std::vector<std::bitset<MAX_BITS>>();
+std::vector<unsigned long long> WuManber::CharMasks = std::vector<unsigned long long>();
+std::vector<unsigned long long> WuManber::Errors = std::vector<unsigned long long>();
+std::vector<unsigned long long> WuManber::NextErrors = std::vector<unsigned long long>();
 
 void WuManber::GetCharMasks(const Text& pattern)
 {
-	CharMasks.assign(ALPHABET_SIZE, std::bitset<MAX_BITS>().set());
+	CharMasks.resize(ALPHABET_SIZE, -1);
 	for (int i = 0; i < pattern.Length(); i++)
 	{
-		CharMasks[pattern[i]].set(i, 0);
+		CharMasks[pattern[i]] &= ~(1ULL << (unsigned long long)i);// .set(i, 0);
 	}
 }
 
@@ -24,7 +24,7 @@ const std::vector<size_t> WuManber::Search(const Text& text, const Text& pattern
 		NextErrors.reserve(EditDistance + 1);
 	}
 	
-	Errors[0] = std::bitset<MAX_BITS>().set();
+	Errors[0] = -1;
 	
 	for (int i = 1; i <= EditDistance; i++)
 	{
@@ -41,7 +41,7 @@ const std::vector<size_t> WuManber::Search(const Text& text, const Text& pattern
 		
 		Errors.swap(NextErrors);
 
-		if (!Errors[EditDistance].test(pattern.Length() - 1))
+		if ((Errors[EditDistance] & (1ULL << (unsigned long long)(pattern.Length() - 1))) == 0) // !Errors[EditDistance].test(pattern.Length() - 1)
 		{
 			Occurences.emplace_back(i);
 		}

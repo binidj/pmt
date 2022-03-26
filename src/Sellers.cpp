@@ -6,7 +6,7 @@ std::vector<int> Sellers::NextColumn = std::vector<int>();
 
 void Sellers::GetNext(const Text& pattern, char Ch)
 {
-	std::fill(NextColumn.begin(), NextColumn.end(), 0);
+	NextColumn[0] = 0;
 	for (int i = 1; i < NextColumn.size(); i++)
 	{
 		NextColumn[i] = std::min(Column[i] + 1, NextColumn[i - 1] + 1);
@@ -19,9 +19,12 @@ const std::vector<size_t> Sellers::Search(const Text& text, const Text& pattern,
 {
 	std::vector<size_t> Occurences;
 
-	Column.assign(pattern.Length() + 1, 0);
-	NextColumn.assign(pattern.Length() + 1, 0);
-
+	if (Column.size() == 0 || Rebuild)
+	{
+		Column.resize(pattern.Length() + 1);
+		NextColumn.resize(pattern.Length() + 1);
+	}
+	
 	std::iota(Column.begin(), Column.end(), 0);
 
 	for (size_t i = 0; i < text.Length(); i++)
@@ -33,6 +36,6 @@ const std::vector<size_t> Sellers::Search(const Text& text, const Text& pattern,
 			Occurences.emplace_back(i);
 		}
 	}
-
+	
 	return Occurences;
 }

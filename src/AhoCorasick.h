@@ -26,5 +26,5 @@ private:
 	
 public:
 	// TODO: optimize this function
-    static const std::vector<std::vector<size_t>> Search(const Text& text, const std::vector<Text>& PatternSet, const bool Rebuild = false);
+    static const std::vector<std::pair<size_t, size_t>> Search(const Text& text, const std::vector<Text>& PatternSet, const bool Rebuild = false);
 };

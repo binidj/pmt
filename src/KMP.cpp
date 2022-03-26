@@ -22,11 +22,11 @@ std::vector<int> KMP::GetBorder(const Text& pattern)
 	return Border;
 }
 
-const std::vector<size_t> KMP::Search(const Text& text, const Text& pattern, bool BuildBorder)
+const std::vector<size_t> KMP::Search(const Text& text, const Text& pattern, const int EditDistance, const bool Rebuild)
 {
 	std::vector<size_t> Occurences;
 
-	if (Border.size() == 0 || BuildBorder)
+	if (Border.size() == 0 || Rebuild)
 	{
 		Border = std::move(GetBorder(pattern));
 	}

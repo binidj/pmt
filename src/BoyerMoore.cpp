@@ -35,11 +35,11 @@ void BoyerMoore::GetGoodSuffix(const Text& pattern)
 	}
 }
 
-const std::vector<size_t> BoyerMoore::Search(const Text& text, const Text& pattern, bool BuildHeuriscts)
+const std::vector<size_t> BoyerMoore::Search(const Text& text, const Text& pattern, const int EditDistance, const bool Rebuild)
 {
 	std::vector<size_t> Occurences;
 
-	if (BadChar.size() == 0 || GoodSuffix.size() == 0 || BuildHeuriscts)
+	if (BadChar.size() == 0 || GoodSuffix.size() == 0 || Rebuild)
 	{
 		GetBadChar(pattern);
 		GetGoodSuffix(pattern);

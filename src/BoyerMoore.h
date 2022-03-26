@@ -11,5 +11,5 @@ private:
     static void GetBadChar(const Text& pattern);
     static void GetGoodSuffix(const Text& pattern);
 public:
-    static const std::vector<size_t> Search(const Text& text, const Text& pattern, bool BuildHeuriscts = false);
+    static const std::vector<size_t> Search(const Text& text, const Text& pattern, const int EditDistance = 0, const bool Rebuild = false);
 };

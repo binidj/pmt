@@ -15,7 +15,7 @@ void Sellers::GetNext(const Text& pattern, char Ch)
 	}
 }
 
-const std::vector<size_t> Sellers::Search(const Text& text, const Text& pattern, const int Err)
+const std::vector<size_t> Sellers::Search(const Text& text, const Text& pattern, const int EditDistance, const bool Rebuild)
 {
 	std::vector<size_t> Occurences;
 
@@ -28,7 +28,7 @@ const std::vector<size_t> Sellers::Search(const Text& text, const Text& pattern,
 	{
 		GetNext(pattern, text[i]);
 		Column.swap(NextColumn);
-		if (Column.back() <= Err)
+		if (Column.back() <= EditDistance)
 		{
 			Occurences.emplace_back(i);
 		}

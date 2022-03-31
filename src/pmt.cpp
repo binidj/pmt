@@ -19,12 +19,39 @@
 
 void PrintHelp()
 {
-
+	fprintf(stderr, "--------PMT--------\n");
+	fprintf(stderr, "-------IF767-------\n\n");
+	fprintf(stderr, "------FORMATO------\n");
+	fprintf(stderr, "pmt [options] pattern textfile [textfile...]\n");
+	fprintf(stderr, "options - CONFIRA SEÇÃO 'OPÇÕES ADICIONAIS'\n");
+	fprintf(stderr, "patterns - Aho Corasick | BoyerMoore | Sellers | Sliding Window | Wu Manber \n");
+	fprintf(stderr, "textfile - localização do arquivo de texto a ser utilizado.\n");
+	fprintf(stderr, "	OBS: SE FOR UTILIZAR MAIS DE 1 ARQUIVO, É NECESSÁRIO COLOCAR COLCHETES\n");
+	fprintf(stderr, "	EX: pmt 'Sellers' ['file1.txt', 'file2.txt']\n\n");
+	fprintf(stderr, "--OPÇÕES ADICIONAIS--\n");
+	fprintf(stderr, "-e | --edit emax - Localiza todas as ocorrencias aproximadas do padrao a uma distancia maxima emax\n");
+	fprintf(stderr, "-p | --pattern patternfile - Realiza a busca de todos os padroes contidos no arquivo patternfile.\n");
+	fprintf(stderr, "-a | --algorithm algorithm_name - Realiza a busca de padroes usando o algoritmo.\n");
+	fprintf(stderr, "-c | --count - Imprime apenas a quantidade total de ocorrencias do(s) padrao(oes) contidas no(s) arquivo(s) de texto.\n");
+	fprintf(stderr, "-h | --help - Imprime um manual básico de uso da aplicação\n");
 }
 
 void PrintUsage()
 {
 
+}
+
+bool HasWildcards(const char* FileName)
+{
+	int len = strlen(FileName);
+	for (int i = 0; i < len; i++)
+	{
+		if (FileName[i] == '*')
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 int main(int argc, char** argv)
@@ -37,8 +64,6 @@ int main(int argc, char** argv)
 	bool PrintCount = false;
 	int BufferSize = 1024;
 	bool Help = false;
-
-	// incluir bool e opção indicando o uso de regex no textfile (pode ser letra w)
 
 	while ((Option = getopt(argc, argv, "a:b:ce:hp:")) != -1)
 	{
@@ -96,7 +121,7 @@ int main(int argc, char** argv)
 	}
 	else 
 	{
-		strcpy(PatternArg, argv[optind]); // pattern passado no argumento 
+		strcpy(PatternArg, argv[optind]);
 		optind += 1;
 	}
 
@@ -108,7 +133,64 @@ int main(int argc, char** argv)
 	}
 
 	char buffer[BufferSize];
+
+	bool IsSinglePattern = true;
+	auto SinglePatternSearch = BoyerMoore::Search;
+	auto MultiplePatternSearch = AhoCorasick::Search;
+
+	// Ajeitar essa parte, seleção e erros separados
+	// AlgorithName so pode conter single pattern, usar aho corasick somente via flag -p
+	if (strcmp(AlgorithName, "boyer_moore") == 0) 
+	{
+		SinglePatternSearch = BoyerMoore::Search;
+	}
+	// se algoritmo for Sellers/WuManber e EditDistance < 0 : printa erro de distancia invalida
+	else if((strcmp(AlgorithName, "sellers") == 0 || strcmp(AlgorithName, "wu_manber") == 0) && EditDistance < 0 )
+	{
+		fprintf(stderr,"Invalid distance.\n");
+	}
+	// se algoritmo for WuManber dar erro quando tamanho do padrão > 64
+	else if(strcmp(AlgorithName, "wu_manber") == 0 && strlen(PatternFile) < 0) // errado, preciso verificar
+	{
+		fprintf(stderr,"Invalid pattern.\n");
+	}
+
+	if (PatternFile != nullptr)
+	{
+		IsSinglePattern = false;
+	}
 	
+	std::vector<char*> FileList;
+	FileList.reserve(2*MinArgsRequired);
+	
+	for (int FileIndex = optind; FileIndex < argc; FileIndex++)
+	{
+		if (HasWildcards(argv[FileIndex]))
+		{
+			// Regex check
+			// emplace_back all files that match
+		}
+		else 
+		{
+			FileList.emplace_back(argv[FileIndex]);
+		}
+		// FILE* fl = fopen(argv[FileIndex], "r");
+		// Rodar a busca pros arquivos nos argumentos
+		// fclose(fl);
+	}
+
+	std::vector<Text> PatternList;
+	PatternList.reserve(1024);
+
+	if (!IsSinglePattern)
+	{
+		// Percorrer patternfile e colocar os padroes
+	}
+	else 
+	{
+		PatternList.emplace_back(PatternArg);
+	}
+
 	FILE* fl;
 	fl = fopen(argv[optind], "r");
 	// fl = fopen("./shakespeare_all_texts_lowercase.txt", "r");
@@ -120,34 +202,8 @@ int main(int argc, char** argv)
 		// return 1;
 	}
 
-	bool IsSinglePattern = true;
-	auto SinglePatternSearch = BoyerMoore::Search;
-	auto MultiplePatternSearch = AhoCorasick::Search;
-
-	// AlgorithName so pode conter single pattern, usar aho corasick somente via flag -p
-	if (strcmp(AlgorithName, "boyer_moore") == 0) 
-	{
-		SinglePatternSearch = BoyerMoore::Search;
-	}
-	// else if ..
-	// se algoritmo for Sellers/WuManber e EditDistance < 0 : printa erro de distancia invalida
-	// se algoritmo for WuManber dar erro quando tamanho do padrão > 64
-
-	if (PatternFile != nullptr)
-	{
-		IsSinglePattern = false;
-	}
-	
-	// sem regex
-	for (int FileIndex = optind; FileIndex < argc; FileIndex++)
-	{
-		// FILE* fl = fopen(argv[FileIndex], "r");
-		// Rodar a busca pros arquivos nos argumentos
-		// fclose(fl);
-	}
-
-	// com regex (so checa o padrao em optind)
-	// checar todos os arquivos com match em argv[optind] (ver com paguso se diretorio corrente é suficiente)
+	// Organizar loop: Para toda FileList, percorrer toda a PatternList
+	// Diferenciar SinglePatternSearch e Aho 
 
 	size_t OccAmount = 0, other = 0;
 

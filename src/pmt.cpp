@@ -169,6 +169,13 @@ int main(int argc, char** argv)
 		}
 	}
 
+	if ((SinglePatternSearch == Sellers::Search || SinglePatternSearch == WuManber::Search) && EditDistance < 0)
+	{
+		fprintf(stderr,"Error: You should provide a valid EditDistance\n");
+		PrintUsage();
+		return 1;
+	}
+
 	// // Ajeitar essa parte, seleção e erros separados
 	// // AlgorithName so pode conter single pattern, usar aho corasick somente via flag -p
 	// if (strcmp(AlgorithName, "boyer_moore") == 0) 
@@ -186,7 +193,7 @@ int main(int argc, char** argv)
 	// 	fprintf(stderr,"Invalid pattern.\n");
 	// }
 	
-	std::vector<char*> FileList;
+	std::vector<Text> FileList;
 	FileList.reserve(RemainingArgs);
 	
 	for (int FileIndex = optind; FileIndex < argc; FileIndex++)
@@ -210,35 +217,57 @@ int main(int argc, char** argv)
 
 	if (HasPatternFile)
 	{
-		// FILE *fp = fopen()
-		// Percorrer patternfile e colocar os padroes
+		FILE* fp = fopen(PatternFile, "r");
+		if (fp == NULL)
+		{
+			fprintf(stderr,"Pattern file %s does not exist\n", argv[optind]);
+			PrintUsage();
+			return 1;
+		}
+
+		while (fgets(buffer, BufferSize, fp))
+		{
+			PatternList.emplace_back(PatternArg);
+			if (SinglePatternSearch == WuManber::Search && PatternList.back().Length() > 64)
+			{
+				fprintf(stderr,"Warning: skiping search for \"%s\", wu_manber does not support large patterns.\n", PatternList.back().GetData());
+				PatternList.pop_back();
+			}
+		}
 	}
 	else 
 	{
 		PatternList.emplace_back(PatternArg);
+		if (SinglePatternSearch == WuManber::Search && PatternList.back().Length() > 64)
+		{
+			fprintf(stderr,"Warning: skiping search for \"%s\", wu_manber does not support large patterns.\n", PatternList.back().GetData());
+			return 0;
+		}
 	}
 
-	FILE* fl = fopen(argv[optind], "r");
+	// FILE* fl = fopen(argv[optind], "r");
 	// fl = fopen("./shakespeare_all_texts_lowercase.txt", "r");
 
-	if (fl == NULL)
-	{
-		fprintf(stderr,"File %s does not exist\n", argv[optind]);
-		// PrintUsage();
-		// return 1;
-	}
+	// if (fl == NULL)
+	// {
+	// 	fprintf(stderr,"File %s does not exist\n", argv[optind]);
+	// 	// PrintUsage();
+	// 	// return 1;
+	// }
 
 	// Organizar loop: Para toda FileList, percorrer toda a PatternList
 	// Diferenciar SinglePatternSearch e Aho 
 
-	size_t OccAmount = 0, other = 0;
+	size_t OccAmount = 0;
+
+	
 
 	{
 		BenchmarkTimer benchmark;
 		Text patt("coward");
 
 		std::vector<Text> PatternSet = { "love", "death", "conscience", "romeo", "juliet" };
-		while (fgets(buffer, BufferSize, fl))
+		// while (fgets(buffer, BufferSize, fl))
 		{
 			// printf("%s", buffer);
 			Text text(buffer);
@@ -246,7 +275,7 @@ int main(int argc, char** argv)
 			std::vector<size_t>Occ = std::move(SinglePatternSearch(text, patt, EditDistance, false));
 			// const std::vector<std::vector<size_t>> OccSet = AhoCorasick::Search(text, PatternSet);
 
-			other += Occ.size();
+			// other += Occ.size();
 			
 			// for (auto& vec : OccSet)
 			// {
@@ -256,9 +285,9 @@ int main(int argc, char** argv)
 	}
 
 	printf("Found %zu occurences\n", OccAmount);
-	printf("%zu\n", other);
+	// printf("%zu\n", other);
 
-	fclose(fl);
+	// fclose(fl);
 	
 	return 0;
 }

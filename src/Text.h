@@ -8,6 +8,7 @@ class Text
 private:
     char* Data;
     size_t Size;
+    bool Borrow = false;
 public:
     void Clear();
     const size_t Length() const;
@@ -22,4 +23,5 @@ public:
     Text(const Text& text);
     Text(Text&& text) noexcept;
     Text(const char* Buffer);
+    Text(char* Buffer, const int BufferSize);
 };

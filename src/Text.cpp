@@ -58,6 +58,7 @@ Text::Text()
 
 Text::~Text()
 {
+	if (Borrow) return;
 	delete[] Data;
 }
 
@@ -79,8 +80,17 @@ Text::Text(Text&& text) noexcept
 
 Text::Text(const char* Buffer)
 {
-	// printf("Char* constructor\n");
+	// printf("Cpy constructor\n");
 	Size = strlen(Buffer);
 	Data = new char[Size + 1];
 	memcpy(Data, Buffer, Size + 1);
+}
+
+Text::Text(char* Buffer, const int BufferSize)
+{
+	// printf("Own constructor\n");
+	Size = strlen(Buffer);
+	Data = Buffer;
+	Borrow = true;
+	// memcpy(Data, Buffer, Size + 1);
 }

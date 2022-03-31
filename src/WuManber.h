@@ -7,9 +7,9 @@
 class WuManber
 {
 private:
-    static std::vector<std::bitset<MAX_BITS>> CharMasks;
-    static std::vector<std::bitset<MAX_BITS>> Errors;
-    static std::vector<std::bitset<MAX_BITS>> NextErrors;
+    static std::vector<unsigned long long> CharMasks;
+    static std::vector<unsigned long long> Errors;
+    static std::vector<unsigned long long> NextErrors;
 
     static void GetCharMasks(const Text& pattern);
 public:

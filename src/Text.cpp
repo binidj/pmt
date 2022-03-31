@@ -94,3 +94,8 @@ Text::Text(char* Buffer, const int BufferSize)
 	Borrow = true;
 	// memcpy(Data, Buffer, Size + 1);
 }
+
+bool operator<(const Text &Lhs, const Text &Rhs)
+{
+	return strcmp(Lhs.GetData(), Rhs.GetData()) < 0;
+}

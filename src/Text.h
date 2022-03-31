@@ -25,3 +25,5 @@ public:
     Text(const char* Buffer);
     Text(char* Buffer, const int BufferSize);
 };
+
+bool operator<(const Text &Lhs, const Text &Rhs);

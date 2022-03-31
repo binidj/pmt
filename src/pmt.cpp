@@ -10,12 +10,12 @@
 #include "WuManber.h"
 #include "AhoCorasick.h"
 #include "BenchmarkTimer.h"
-#include <string.h>
-#include <cstdio>
-#include <stdio.h>
-#include <cstddef>
-#include <cstdint>
 #include <unistd.h>
+#include <map>
+
+typedef const std::vector<size_t>(*SearchFunctionPointer)(const Text&, const Text&, const int, const bool);
+typedef void(*InitFunctionPointer)(const Text&);
+
 
 void PrintHelp()
 {
@@ -112,12 +112,14 @@ int main(int argc, char** argv)
 		return 0;
 	}
 
+	bool HasPatternFile = false;
 	int MinArgsRequired = 2;
 	const int RemainingArgs = argc - optind;
 
 	if (strcmp(PatternFile, "") != 0)
 	{
 		MinArgsRequired = 1;
+		HasPatternFile = true;
 	}
 	else 
 	{
@@ -134,34 +136,58 @@ int main(int argc, char** argv)
 
 	char buffer[BufferSize];
 
-	bool IsSinglePattern = true;
+	bool UsingAhoCorasick = strcmp(AlgorithName, "aho_corasick") == 0;
 	auto SinglePatternSearch = BoyerMoore::Search;
-	auto MultiplePatternSearch = AhoCorasick::Search;
+	// auto SinglePatternInit = BoyerMoore::Init;
+	
+	static std::map<Text, SearchFunctionPointer> SearchSelector = 
+	{
+		{"boyer_moore", BoyerMoore::Search},
+		{"kmp", KMP::Search},
+		{"sellers", Sellers::Search},
+		{"wu_manber", WuManber::Search}
+	};
 
-	// Ajeitar essa parte, seleção e erros separados
-	// AlgorithName so pode conter single pattern, usar aho corasick somente via flag -p
-	if (strcmp(AlgorithName, "boyer_moore") == 0) 
+	// static std::map<Text, InitFunctionPointer> InitSelector = 
+	// {
+	// 	{"boyer_moore", BoyerMoore::Init},
+	// 	{"kmp", KMP::Init},
+	// 	{"sellers", Sellers::Init},
+	// 	{"wu_manber", WuManber::Init}
+	// };
+
+	if (!UsingAhoCorasick && strcmp(AlgorithName, "") != 0)
 	{
-		SinglePatternSearch = BoyerMoore::Search;
-	}
-	// se algoritmo for Sellers/WuManber e EditDistance < 0 : printa erro de distancia invalida
-	else if((strcmp(AlgorithName, "sellers") == 0 || strcmp(AlgorithName, "wu_manber") == 0) && EditDistance < 0 )
-	{
-		fprintf(stderr,"Invalid distance.\n");
-	}
-	// se algoritmo for WuManber dar erro quando tamanho do padrão > 64
-	else if(strcmp(AlgorithName, "wu_manber") == 0 && strlen(PatternFile) < 0) // errado, preciso verificar
-	{
-		fprintf(stderr,"Invalid pattern.\n");
+		SinglePatternSearch = SearchSelector[Text(AlgorithName)];
+		// SinglePatternInit = InitSelector[Text(AlgorithName)];
+
+		if (SinglePatternSearch == nullptr)
+		{
+			fprintf(stderr,"Error: Algorithm not supported/found\n");
+			PrintUsage();
+			return 1;
+		}
 	}
 
-	if (PatternFile != nullptr)
-	{
-		IsSinglePattern = false;
-	}
+	// // Ajeitar essa parte, seleção e erros separados
+	// // AlgorithName so pode conter single pattern, usar aho corasick somente via flag -p
+	// if (strcmp(AlgorithName, "boyer_moore") == 0) 
+	// {
+	// 	SinglePatternSearch = BoyerMoore::Search;
+	// }
+	// // se algoritmo for Sellers/WuManber e EditDistance < 0 : printa erro de distancia invalida
+	// else if((strcmp(AlgorithName, "sellers") == 0 || strcmp(AlgorithName, "wu_manber") == 0) && EditDistance < 0 )
+	// {
+	// 	fprintf(stderr,"Invalid distance.\n");
+	// }
+	// // se algoritmo for WuManber dar erro quando tamanho do padrão > 64
+	// else if(strcmp(AlgorithName, "wu_manber") == 0 && strlen(PatternFile) < 0) // errado, preciso verificar
+	// {
+	// 	fprintf(stderr,"Invalid pattern.\n");
+	// }
 	
 	std::vector<char*> FileList;
-	FileList.reserve(2*MinArgsRequired);
+	FileList.reserve(RemainingArgs);
 	
 	for (int FileIndex = optind; FileIndex < argc; FileIndex++)
 	{
@@ -182,8 +208,9 @@ int main(int argc, char** argv)
 	std::vector<Text> PatternList;
 	PatternList.reserve(1024);
 
-	if (!IsSinglePattern)
+	if (HasPatternFile)
 	{
+		// FILE *fp = fopen()
 		// Percorrer patternfile e colocar os padroes
 	}
 	else 
@@ -191,8 +218,7 @@ int main(int argc, char** argv)
 		PatternList.emplace_back(PatternArg);
 	}
 
-	FILE* fl;
-	fl = fopen(argv[optind], "r");
+	FILE* fl = fopen(argv[optind], "r");
 	// fl = fopen("./shakespeare_all_texts_lowercase.txt", "r");
 
 	if (fl == NULL)

@@ -12,10 +12,7 @@
 #include "BenchmarkTimer.h"
 #include <unistd.h>
 #include <map>
-
-typedef const std::vector<size_t>(*SearchFunctionPointer)(const Text&, const Text&, const int, const bool);
-typedef void(*InitFunctionPointer)(const Text&);
-
+#include <memory>
 
 void PrintHelp()
 {
@@ -135,63 +132,6 @@ int main(int argc, char** argv)
 	}
 
 	char buffer[BufferSize];
-
-	bool UsingAhoCorasick = strcmp(AlgorithName, "aho_corasick") == 0;
-	auto SinglePatternSearch = BoyerMoore::Search;
-	// auto SinglePatternInit = BoyerMoore::Init;
-	
-	static std::map<Text, SearchFunctionPointer> SearchSelector = 
-	{
-		{"boyer_moore", BoyerMoore::Search},
-		{"kmp", KMP::Search},
-		{"sellers", Sellers::Search},
-		{"wu_manber", WuManber::Search}
-	};
-
-	// static std::map<Text, InitFunctionPointer> InitSelector = 
-	// {
-	// 	{"boyer_moore", BoyerMoore::Init},
-	// 	{"kmp", KMP::Init},
-	// 	{"sellers", Sellers::Init},
-	// 	{"wu_manber", WuManber::Init}
-	// };
-
-	if (!UsingAhoCorasick && strcmp(AlgorithName, "") != 0)
-	{
-		SinglePatternSearch = SearchSelector[Text(AlgorithName)];
-		// SinglePatternInit = InitSelector[Text(AlgorithName)];
-
-		if (SinglePatternSearch == nullptr)
-		{
-			fprintf(stderr,"Error: Algorithm not supported/found\n");
-			PrintUsage();
-			return 1;
-		}
-	}
-
-	if ((SinglePatternSearch == Sellers::Search || SinglePatternSearch == WuManber::Search) && EditDistance < 0)
-	{
-		fprintf(stderr,"Error: You should provide a valid EditDistance\n");
-		PrintUsage();
-		return 1;
-	}
-
-	// // Ajeitar essa parte, seleção e erros separados
-	// // AlgorithName so pode conter single pattern, usar aho corasick somente via flag -p
-	// if (strcmp(AlgorithName, "boyer_moore") == 0) 
-	// {
-	// 	SinglePatternSearch = BoyerMoore::Search;
-	// }
-	// // se algoritmo for Sellers/WuManber e EditDistance < 0 : printa erro de distancia invalida
-	// else if((strcmp(AlgorithName, "sellers") == 0 || strcmp(AlgorithName, "wu_manber") == 0) && EditDistance < 0 )
-	// {
-	// 	fprintf(stderr,"Invalid distance.\n");
-	// }
-	// // se algoritmo for WuManber dar erro quando tamanho do padrão > 64
-	// else if(strcmp(AlgorithName, "wu_manber") == 0 && strlen(PatternFile) < 0) // errado, preciso verificar
-	// {
-	// 	fprintf(stderr,"Invalid pattern.\n");
-	// }
 	
 	std::vector<Text> FileList;
 	FileList.reserve(RemainingArgs);
@@ -207,11 +147,28 @@ int main(int argc, char** argv)
 		{
 			FileList.emplace_back(argv[FileIndex]);
 		}
-		// FILE* fl = fopen(argv[FileIndex], "r");
-		// Rodar a busca pros arquivos nos argumentos
-		// fclose(fl);
 	}
 
+	if (strcmp(AlgorithName, "") == 0)
+		strcpy(AlgorithName, "boyer_moore");
+
+	bool UsingKmp = strcmp(AlgorithName, "kmp") == 0;
+	bool UsingBoyerMoore = strcmp(AlgorithName, "boyer_moore") == 0;
+	bool UsingSellers = strcmp(AlgorithName, "sellers") == 0;
+	bool UsingWuManber = strcmp(AlgorithName, "wu_manber") == 0;
+	bool UsingAhoCorasick = strcmp(AlgorithName, "aho_corasick") == 0;
+
+	const bool UsingSomeAlgorithm = UsingKmp + UsingBoyerMoore + UsingWuManber + UsingAhoCorasick;
+	if (!UsingSomeAlgorithm)
+	{
+		fprintf(stderr,"Error: Algorithm not supported/found\n");
+		PrintUsage();
+		return 1;
+	}
+
+	std::unique_ptr<SinglePatternSearch> Strategy = std::make_unique<Sellers>();
+	std::vector<std::unique_ptr<SinglePatternSearch>> SearchStrategies;
+	SearchStrategies.reserve(1024);
 	std::vector<Text> PatternList;
 	PatternList.reserve(1024);
 
@@ -228,11 +185,14 @@ int main(int argc, char** argv)
 		while (fgets(buffer, BufferSize, fp))
 		{
 			PatternList.emplace_back(PatternArg);
-			if (SinglePatternSearch == WuManber::Search && PatternList.back().Length() > 64)
+			SearchStrategies.emplace_back(Strategy.get());
+			if (UsingWuManber && PatternList.back().Length() > 64)
 			{
 				fprintf(stderr,"Warning: skiping search for \"%s\", wu_manber does not support large patterns.\n", PatternList.back().GetData());
 				PatternList.pop_back();
+				SearchStrategies.pop_back();
 			}
+			SearchStrategies.back()->Init(PatternList.back(), EditDistance);
 		}
 
 		fclose(fp);
@@ -240,11 +200,13 @@ int main(int argc, char** argv)
 	else 
 	{
 		PatternList.emplace_back(PatternArg);
-		if (SinglePatternSearch == WuManber::Search && PatternList.back().Length() > 64)
+		SearchStrategies.emplace_back(Strategy.get());
+		if (UsingWuManber && PatternList.back().Length() > 64)
 		{
 			fprintf(stderr,"Warning: skiping search for \"%s\", wu_manber does not support large patterns.\n", PatternList.back().GetData());
 			return 0;
 		}
+		SearchStrategies.back()->Init(PatternList.back(), EditDistance);
 	}
 
 	// FILE* fl = fopen(argv[optind], "r");
@@ -298,7 +260,7 @@ int main(int argc, char** argv)
 				{
 					// rebuild
 					// Não vai dar pra ser estático :(
-					std::vector<size_t>Occ = SinglePatternSearch(text, Pattern, EditDistance, false);
+					// std::vector<size_t>Occ = SinglePatternSearch(text, Pattern, EditDistance, false);
 				}
 			}
 			
@@ -318,7 +280,7 @@ int main(int argc, char** argv)
 		
 	}
 
-	printf("Found %zu occurences\n", OccAmount);
+	printf("Found %lld occurences\n", OccAmount);
 	// printf("%zu\n", other);
 
 	// fclose(fl);

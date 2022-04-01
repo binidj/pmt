@@ -4,7 +4,7 @@
 #include "Constants.h"
 #include "SinglePatternSearch.h"
 
-class BoyerMoore : SinglePatternSearch
+class BoyerMoore : public SinglePatternSearch
 {
 private:
     std::vector<int> BadChar;

@@ -5,7 +5,7 @@
 #include "Text.h"
 #include "SinglePatternSearch.h"
 
-class WuManber : SinglePatternSearch
+class WuManber : public SinglePatternSearch
 {
 private:
     std::vector<unsigned long long> CharMasks;

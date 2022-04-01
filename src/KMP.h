@@ -3,7 +3,7 @@
 #include "Text.h"
 #include "SinglePatternSearch.h"
 
-class KMP : SinglePatternSearch
+class KMP : public SinglePatternSearch
 {
 private:
     std::vector<int> Border;

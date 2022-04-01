@@ -158,7 +158,7 @@ int main(int argc, char** argv)
 	bool UsingWuManber = strcmp(AlgorithName, "wu_manber") == 0;
 	bool UsingAhoCorasick = strcmp(AlgorithName, "aho_corasick") == 0;
 
-	const bool UsingSomeAlgorithm = UsingKmp + UsingBoyerMoore + UsingWuManber + UsingAhoCorasick;
+	const bool UsingSomeAlgorithm = UsingKmp + UsingBoyerMoore + UsingSellers + UsingWuManber + UsingAhoCorasick;
 	if (!UsingSomeAlgorithm)
 	{
 		fprintf(stderr,"Error: Algorithm not supported/found\n");
@@ -166,7 +166,16 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	std::unique_ptr<SinglePatternSearch> Strategy = std::make_unique<Sellers>();
+	std::unique_ptr<SinglePatternSearch> Strategy;
+	if (UsingKmp)
+		Strategy = std::make_unique<KMP>();
+	else if (UsingBoyerMoore)
+		Strategy = std::make_unique<BoyerMoore>();
+	else if (UsingSellers)
+		Strategy = std::make_unique<Sellers>();
+	else if (UsingWuManber)
+		Strategy = std::make_unique<WuManber>();
+
 	std::vector<std::unique_ptr<SinglePatternSearch>> SearchStrategies;
 	SearchStrategies.reserve(1024);
 	std::vector<Text> PatternList;

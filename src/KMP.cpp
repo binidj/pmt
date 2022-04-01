@@ -1,7 +1,5 @@
 #include "KMP.h"
 
-std::vector<int> KMP::Border = std::vector<int>();
-
 std::vector<int> KMP::GetBorder(const Text& pattern)
 {
 	std::vector<int> Border(pattern.Length() + 1);
@@ -22,14 +20,14 @@ std::vector<int> KMP::GetBorder(const Text& pattern)
 	return Border;
 }
 
-const std::vector<size_t> KMP::Search(const Text& text, const Text& pattern, const int EditDistance, const bool Rebuild)
+void KMP::Init(const Text& pattern, const int EditDistance)
+{
+	Border = GetBorder(pattern);
+}
+
+const std::vector<size_t> KMP::Search(const Text& text, const Text& pattern, const int EditDistance)
 {
 	std::vector<size_t> Occurences;
-
-	if (Border.size() == 0 || Rebuild)
-	{
-		Border = std::move(GetBorder(pattern));
-	}
 
 	int i = 0, j = 0;
 	int Limit = (int)text.Length() - (int)pattern.Length();

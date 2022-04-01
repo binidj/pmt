@@ -1,14 +1,15 @@
 #pragma once
 #include <vector>
 #include "Text.h"
+#include "SinglePatternSearch.h"
 
-class Sellers
+class Sellers : public SinglePatternSearch
 {
 private:
-    static std::vector<int> Column;
-    static std::vector<int> NextColumn;
-
-    static void GetNext(const Text& pattern, char Ch);
+    std::vector<int> Column;
+    std::vector<int> NextColumn;
+    void GetNext(const Text& pattern, char Ch);
 public:
-    static const std::vector<size_t> Search(const Text& text, const Text& pattern, const int EditDistance = 0, const bool Rebuild = false);
+    void Init(const Text& pattern, const int EditDistance);
+    const std::vector<size_t> Search(const Text& text, const Text& pattern, const int EditDistance);
 };

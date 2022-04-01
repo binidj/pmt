@@ -1,9 +1,5 @@
 #include "WuManber.h"
 
-std::vector<unsigned long long> WuManber::CharMasks = std::vector<unsigned long long>();
-std::vector<unsigned long long> WuManber::Errors = std::vector<unsigned long long>();
-std::vector<unsigned long long> WuManber::NextErrors = std::vector<unsigned long long>();
-
 void WuManber::GetCharMasks(const Text& pattern)
 {
 	CharMasks.resize(ALPHABET_SIZE, -1);
@@ -13,16 +9,16 @@ void WuManber::GetCharMasks(const Text& pattern)
 	}
 }
 
-const std::vector<size_t> WuManber::Search(const Text& text, const Text& pattern, const int EditDistance, const bool Rebuild)
+void WuManber::Init(const Text& pattern, const int EditDistance)
+{
+	GetCharMasks(pattern);
+	Errors.reserve(EditDistance + 1);
+	NextErrors.reserve(EditDistance + 1);
+}
+
+const std::vector<size_t> WuManber::Search(const Text& text, const Text& pattern, const int EditDistance)
 {
 	std::vector<size_t> Occurences;
-
-	if (CharMasks.size() == 0)
-	{
-		GetCharMasks(pattern);
-		Errors.reserve(EditDistance + 1);
-		NextErrors.reserve(EditDistance + 1);
-	}
 	
 	Errors[0] = -1;
 	

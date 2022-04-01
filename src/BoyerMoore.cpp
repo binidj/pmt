@@ -2,10 +2,6 @@
 #include "KMP.h"
 #include <algorithm>
 
-std::vector<int> BoyerMoore::BadChar = std::vector<int>(ALPHABET_SIZE, -1);
-
-std::vector<int> BoyerMoore::GoodSuffix = std::vector<int>();
-
 void BoyerMoore::GetBadChar(const Text& pattern)
 {
 	for (int i = 0; i < pattern.Length(); i++)
@@ -21,8 +17,8 @@ void BoyerMoore::GetGoodSuffix(const Text& pattern)
 	Text rpattern(pattern);
 	std::reverse(rpattern.begin(), rpattern.end());
 
-	const std::vector<int> PatternBorder = std::move(KMP::GetBorder(pattern));
-	const std::vector<int> ReverseBorder = std::move(KMP::GetBorder(rpattern));
+	const std::vector<int> PatternBorder = KMP::GetBorder(pattern);
+	const std::vector<int> ReverseBorder = KMP::GetBorder(rpattern);
 
 	GoodSuffix.assign(PatternSize + 1, PatternSize - PatternBorder[PatternSize]);
 	for (int i = 1; i < PatternSize; i++)
@@ -35,15 +31,15 @@ void BoyerMoore::GetGoodSuffix(const Text& pattern)
 	}
 }
 
-const std::vector<size_t> BoyerMoore::Search(const Text& text, const Text& pattern, const int EditDistance, const bool Rebuild)
+void BoyerMoore::Init(const Text& pattern, const int EditDistance)
+{
+	GetBadChar(pattern);
+	GetGoodSuffix(pattern);
+}
+
+const std::vector<size_t> BoyerMoore::Search(const Text& text, const Text& pattern, const int EditDistance)
 {
 	std::vector<size_t> Occurences;
-
-	if (BadChar.size() == 0 || GoodSuffix.size() == 0 || Rebuild)
-	{
-		GetBadChar(pattern);
-		GetGoodSuffix(pattern);
-	}
 
 	int i = 0;
 	int Limit = (int)text.Length() - (int)pattern.Length();

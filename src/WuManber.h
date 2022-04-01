@@ -3,15 +3,16 @@
 #include <bitset>
 #include "Constants.h"
 #include "Text.h"
+#include "SinglePatternSearch.h"
 
-class WuManber
+class WuManber : SinglePatternSearch
 {
 private:
-    static std::vector<unsigned long long> CharMasks;
-    static std::vector<unsigned long long> Errors;
-    static std::vector<unsigned long long> NextErrors;
-
-    static void GetCharMasks(const Text& pattern);
+    std::vector<unsigned long long> CharMasks;
+    std::vector<unsigned long long> Errors;
+    std::vector<unsigned long long> NextErrors;
+    void GetCharMasks(const Text& pattern);
 public:
-    static const std::vector<size_t> Search(const Text& text, const Text& pattern, const int EditDistance = 0, const bool Rebuild = false);
+    void Init(const Text& pattern, const int EditDistance);
+    const std::vector<size_t> Search(const Text& text, const Text& pattern, const int EditDistance);
 };

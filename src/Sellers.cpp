@@ -1,8 +1,6 @@
 #include "Sellers.h"
 #include <numeric>
-
-std::vector<int> Sellers::Column = std::vector<int>();
-std::vector<int> Sellers::NextColumn = std::vector<int>();
+#include <cstdio>
 
 void Sellers::GetNext(const Text& pattern, char Ch)
 {
@@ -15,15 +13,15 @@ void Sellers::GetNext(const Text& pattern, char Ch)
 	}
 }
 
-const std::vector<size_t> Sellers::Search(const Text& text, const Text& pattern, const int EditDistance, const bool Rebuild)
+void Sellers::Init(const Text& pattern, const int EditDistance)
+{
+	Column.resize(pattern.Length() + 1);
+	NextColumn.resize(pattern.Length() + 1);
+}
+
+const std::vector<size_t> Sellers::Search(const Text& text, const Text& pattern, const int EditDistance)
 {
 	std::vector<size_t> Occurences;
-
-	if (Column.size() == 0 || Rebuild)
-	{
-		Column.resize(pattern.Length() + 1);
-		NextColumn.resize(pattern.Length() + 1);
-	}
 	
 	std::iota(Column.begin(), Column.end(), 0);
 

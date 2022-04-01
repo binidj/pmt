@@ -2,14 +2,16 @@
 #include <vector>
 #include "Text.h"
 #include "Constants.h"
+#include "SinglePatternSearch.h"
 
-class BoyerMoore
+class BoyerMoore : SinglePatternSearch
 {
 private:
-    static std::vector<int> BadChar;
-    static std::vector<int> GoodSuffix;
-    static void GetBadChar(const Text& pattern);
-    static void GetGoodSuffix(const Text& pattern);
+    std::vector<int> BadChar;
+    std::vector<int> GoodSuffix;
+    void GetBadChar(const Text& pattern);
+    void GetGoodSuffix(const Text& pattern);
 public:
-    static const std::vector<size_t> Search(const Text& text, const Text& pattern, const int EditDistance = 0, const bool Rebuild = false);
+    void Init(const Text& pattern, const int EditDistance);
+    const std::vector<size_t> Search(const Text& text, const Text& pattern, const int EditDistance);
 };

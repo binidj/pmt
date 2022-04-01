@@ -220,7 +220,7 @@ int main(int argc, char** argv)
 		FILE* fp = fopen(PatternFile, "r");
 		if (fp == NULL)
 		{
-			fprintf(stderr,"Pattern file %s does not exist\n", argv[optind]);
+			fprintf(stderr,"Error: Pattern file \"%s\" does not exist\n", PatternFile);
 			PrintUsage();
 			return 1;
 		}
@@ -234,6 +234,8 @@ int main(int argc, char** argv)
 				PatternList.pop_back();
 			}
 		}
+
+		fclose(fp);
 	}
 	else 
 	{
@@ -258,21 +260,49 @@ int main(int argc, char** argv)
 	// Organizar loop: Para toda FileList, percorrer toda a PatternList
 	// Diferenciar SinglePatternSearch e Aho 
 
-	size_t OccAmount = 0;
+	long long OccAmount = 0;
 
-	
+	// BenchmarkTimer benchmark;
 
+	if (UsingAhoCorasick)
 	{
-		BenchmarkTimer benchmark;
-		Text patt("coward");
+		// AhoCorasick::Init(PatternList);
+	}
+	else 
+	{
+		// Setar para todas as instâncias de algoritmos
+	}
 
-		std::vector<Text> PatternSet = { "love", "death", "conscience", "romeo", "juliet" };
-		// while (fgets(buffer, BufferSize, fl))
+	for (const Text& File : FileList)
+	{
+		FILE *fp = fopen(File.GetData(), "r");
+		
+		if (fp == NULL)
+		{
+			fprintf(stderr,"Warning: skiping \"%s\", text file does not exist\n", File.GetData());
+			continue;
+		}
+		
+		while (fgets(buffer, BufferSize, fp))
 		{
 			// printf("%s", buffer);
-			Text text(buffer);
+			Text text(buffer, BufferSize);
 			
-			std::vector<size_t>Occ = std::move(SinglePatternSearch(text, patt, EditDistance, false));
+			if (UsingAhoCorasick)
+			{
+				// AhoCorasick::Search(...);
+			}
+			else 
+			{
+				for (const Text& Pattern : PatternList)
+				{
+					// rebuild
+					// Não vai dar pra ser estático :(
+					std::vector<size_t>Occ = SinglePatternSearch(text, Pattern, EditDistance, false);
+				}
+			}
+			
+			// std::vector<size_t>Occ = std::move(SinglePatternSearch(text, patt, EditDistance, false));
 			// const std::vector<std::vector<size_t>> OccSet = AhoCorasick::Search(text, PatternSet);
 
 			// other += Occ.size();
@@ -282,6 +312,10 @@ int main(int argc, char** argv)
 			// 	OccAmount += vec.size();
 			// }
 		}
+
+		fclose(fp);
+		// std::vector<Text> PatternSet = { "love", "death", "conscience", "romeo", "juliet" };
+		
 	}
 
 	printf("Found %zu occurences\n", OccAmount);

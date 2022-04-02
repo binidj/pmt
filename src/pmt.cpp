@@ -10,7 +10,7 @@
 #include "WuManber.h"
 #include "AhoCorasick.h"
 #include "BenchmarkTimer.h"
-#include <unistd.h>
+#include <getopt.h>
 #include <map>
 #include <memory>
 #include <functional>
@@ -41,16 +41,26 @@ void PrintUsage()
 
 int main(int argc, char** argv)
 {
-	int Option = -1;
-	int EditDistance = -1;
-	char PatternFile[128] = "";
-	char AlgorithName[128] = "";
-	char PatternArg[128] = "";
-	bool PrintCount = false;
-	int BufferSize = 1024;
-	bool Help = false;
+	static int Option = -1;
+	static int EditDistance = 0;
+	static char PatternFile[128] = "";
+	static char AlgorithName[128] = "";
+	static char PatternArg[128] = "";
+	static bool PrintCount = false;
+	static bool Help = false;
 
-	while ((Option = getopt(argc, argv, "a:b:ce:hp:")) != -1)
+	static int OptionIndex = 0;
+
+	static struct option LongOptions[] =
+	{
+		{"count", no_argument, 0, 'c'},
+		{"help", no_argument, 0, 'h'},
+		{"algorithm", required_argument, 0, 'a'},
+		{"pattern", required_argument, 0, 'p'},
+		{"edit", required_argument, 0, 'e'},
+	};
+	
+	while ((Option = getopt_long(argc, argv, "a:ce:hp:", LongOptions, &OptionIndex)) != -1)
 	{
 		switch (Option)
 		{
@@ -69,18 +79,12 @@ int main(int argc, char** argv)
 			case 'c':
 				PrintCount = true;
 				break;
-
-			case 'b':
-				BufferSize = atoi(optarg);
+			
+			case 'h':
+				Help = true;
 				break;
 
 			case '?':
-				if (optopt == 'e' || optopt == 'p' || optopt == 'a' || optopt == 'b')
-					fprintf(stderr, "Option -%c requires an argument.\n", optopt);
-				else if (isprint(optopt))
-					fprintf(stderr, "Unknown option '-%c'.\n", optopt);
-				else
-					fprintf(stderr, "Unknown option character '\\x%x'.\n", optopt);
 				PrintUsage();
 				return 1;
 				break;
@@ -106,7 +110,7 @@ int main(int argc, char** argv)
 		MinArgsRequired = 1;
 		HasPatternFile = true;
 	}
-	else 
+	else if (RemainingArgs != 0) 
 	{
 		strcpy(PatternArg, argv[optind]);
 		optind += 1;
@@ -114,12 +118,13 @@ int main(int argc, char** argv)
 
 	if (RemainingArgs < MinArgsRequired)
 	{
-		fprintf(stderr,"Few arguments\n");
+		fprintf(stderr,"Error: Few arguments\n");
 		PrintUsage();
 		return 1;
 	}
 
-	char buffer[BufferSize];
+	static const int BufferSize = 1024;
+	static char buffer[BufferSize];
 	
 	std::vector<Text> FileList;
 	FileList.reserve(RemainingArgs);
@@ -200,7 +205,7 @@ int main(int argc, char** argv)
 	}
 	
 	long long TotalOccurrences = 0;
-	long long LineOccurences = 0;
+	long long TotalLines = 0;
 
 	// BenchmarkTimer benchmark;
 
@@ -224,7 +229,8 @@ int main(int argc, char** argv)
 			while (fgets(buffer, BufferSize, fp))
 			{
 				Text text(buffer, BufferSize); // Borrow pointer
-				
+				long long LineOccurences = 0;
+				bool kk = 0;
 				if (UsingAhoCorasick)
 				{
 					std::vector<std::pair<size_t, size_t>> Occurrences = AhoCorasick::Search(text, PatternList);
@@ -237,14 +243,24 @@ int main(int argc, char** argv)
 					{
 						std::vector<size_t> Occurrences = SearchStrategies[i]->Search(text, PatternList[i], EditDistance);
 						LineOccurences = Occurrences.size();
-						TotalOccurrences += LineOccurences;	
+						TotalOccurrences += LineOccurences;
+
+						// if (!PrintCount)
+						// {
+						// 	for (auto meme : Occurrences)
+						// 	{
+						// 		if (meme == text.Length()-1)
+						// 			printf("Occurence in pos %zu\n", meme), kk = true;
+						// 	}
+						// 	// printf("\n");
+						// }	
 					}
 				}
 
-				if (LineOccurences != 0 && !PrintCount)
-				{
+				if (LineOccurences != 0 && !PrintCount && kk)
 					printf("%s\n", buffer);
-				}
+				if (LineOccurences != 0)
+					TotalLines += 1;
 			}
 			
 			fclose(fp);
@@ -252,7 +268,7 @@ int main(int argc, char** argv)
 	}
 	
 	if (PrintCount)
-		printf("%lld\n", TotalOccurrences);
+		printf("%lld occurences on %lld lines\n", TotalOccurrences, TotalLines);
 	
 	return 0;
 }

@@ -39,7 +39,6 @@ char* Text::end() const
 
 Text& Text::operator=(Text&& text) noexcept
 {
-	printf("Move assign\n");
 	if (this != &text)
 	{
 		delete[] Data;
@@ -64,7 +63,6 @@ Text::~Text()
 
 Text::Text(const Text& text)
 {
-	// printf("Copy constructor\n");
 	Size = text.Length();
 	Data = new char[Size + 1];
 	memcpy(Data, text.GetData(), Size + 1);
@@ -72,7 +70,6 @@ Text::Text(const Text& text)
 
 Text::Text(Text&& text) noexcept
 {
-	// printf("Move constructor\n");
 	Size = text.Length();
 	Data = text.begin();
 	text.Clear();
@@ -80,7 +77,6 @@ Text::Text(Text&& text) noexcept
 
 Text::Text(const char* Buffer)
 {
-	// printf("Cpy constructor\n");
 	Size = strlen(Buffer);
 	Data = new char[Size + 1];
 	memcpy(Data, Buffer, Size + 1);
@@ -89,12 +85,10 @@ Text::Text(const char* Buffer)
 
 Text::Text(char* Buffer, const int BufferSize)
 {
-	// printf("Own constructor\n");
 	Size = strlen(Buffer);
 	Data = Buffer;
 	Borrow = true;
 	RemoveLineFeed();
-	// memcpy(Data, Buffer, Size + 1);
 }
 
 void Text::RemoveLineFeed()
@@ -102,6 +96,7 @@ void Text::RemoveLineFeed()
 	if (Size > 0 && Data[Size-1] == '\n')
 	{
 		Data[Size-1] = '\0';
+		Size -= 1;
 	}
 }
 

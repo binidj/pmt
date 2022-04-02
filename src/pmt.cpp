@@ -39,19 +39,6 @@ void PrintUsage()
 
 }
 
-bool HasWildcards(const char* FileName)
-{
-	int len = strlen(FileName);
-	for (int i = 0; i < len; i++)
-	{
-		if (FileName[i] == '*')
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
 int main(int argc, char** argv)
 {
 	int Option = -1;
@@ -139,15 +126,7 @@ int main(int argc, char** argv)
 	
 	for (int FileIndex = optind; FileIndex < argc; FileIndex++)
 	{
-		if (HasWildcards(argv[FileIndex]))
-		{
-			// Regex check
-			// emplace_back all files that match
-		}
-		else 
-		{
-			FileList.emplace_back(argv[FileIndex]);
-		}
+		FileList.emplace_back(argv[FileIndex]);
 	}
 
 	if (strcmp(AlgorithName, "") == 0)

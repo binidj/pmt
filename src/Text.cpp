@@ -93,7 +93,7 @@ Text::Text(char* Buffer, const int BufferSize)
 
 void Text::RemoveLineFeed()
 {
-	if (Size > 0 && Data[Size-1] == '\n')
+	while (Size > 0 && (Data[Size-1] == '\n' || Data[Size-1] == '\r'))
 	{
 		Data[Size-1] = '\0';
 		Size -= 1;

@@ -207,15 +207,14 @@ int main(int argc, char** argv)
 	long long TotalOccurrences = 0;
 	long long TotalLines = 0;
 
-	// BenchmarkTimer benchmark;
-
-	if (UsingAhoCorasick)
-	{
-		AhoCorasick::BuildFSM(PatternList);
-	}
-
 	{
 		// BenchmarkTimer bench;
+
+		if (UsingAhoCorasick)
+		{
+			AhoCorasick::BuildFSM(PatternList);
+		}
+
 		for (const Text& File : FileList)
 		{
 			FILE *fp = fopen(File.GetData(), "r");
@@ -225,12 +224,12 @@ int main(int argc, char** argv)
 				fprintf(stderr,"Warning: skiping file \"%s\", text file does not exist\n", File.GetData());
 				continue;
 			}
-			
+
 			while (fgets(buffer, BufferSize, fp))
 			{
 				Text text(buffer, BufferSize); // Borrow pointer
 				long long LineOccurences = 0;
-				bool kk = 0;
+
 				if (UsingAhoCorasick)
 				{
 					std::vector<std::pair<size_t, size_t>> Occurrences = AhoCorasick::Search(text, PatternList);
@@ -244,20 +243,10 @@ int main(int argc, char** argv)
 						std::vector<size_t> Occurrences = SearchStrategies[i]->Search(text, PatternList[i], EditDistance);
 						LineOccurences = Occurrences.size();
 						TotalOccurrences += LineOccurences;
-
-						// if (!PrintCount)
-						// {
-						// 	for (auto meme : Occurrences)
-						// 	{
-						// 		if (meme == text.Length()-1)
-						// 			printf("Occurence in pos %zu\n", meme), kk = true;
-						// 	}
-						// 	// printf("\n");
-						// }	
 					}
 				}
 
-				if (LineOccurences != 0 && !PrintCount && kk)
+				if (LineOccurences != 0 && !PrintCount)
 					printf("%s\n", buffer);
 				if (LineOccurences != 0)
 					TotalLines += 1;

@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <map>
 #include <memory>
+#include <functional>
 
 void PrintHelp()
 {
@@ -166,15 +167,16 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	std::unique_ptr<SinglePatternSearch> Strategy;
-	if (UsingKmp)
-		Strategy = std::make_unique<KMP>();
-	else if (UsingBoyerMoore)
-		Strategy = std::make_unique<BoyerMoore>();
-	else if (UsingSellers)
-		Strategy = std::make_unique<Sellers>();
-	else if (UsingWuManber)
-		Strategy = std::make_unique<WuManber>();
+	static const std::map<Text, std::function<std::unique_ptr<SinglePatternSearch>()>> StrategySelector = 
+	{
+		{"boyer_moore", []() -> std::unique_ptr<BoyerMoore> { return std::make_unique<BoyerMoore>(); }},
+		{"kmp", []() -> std::unique_ptr<KMP> { return std::make_unique<KMP>(); }},
+		{"sellers", []() -> std::unique_ptr<Sellers> { return std::make_unique<Sellers>(); }},
+		{"wu_manber", []() -> std::unique_ptr<WuManber> { return std::make_unique<WuManber>(); }},
+	};
+
+	std::function<std::unique_ptr<SinglePatternSearch>()> StrategyInit = nullptr;
+	if (!UsingAhoCorasick) StrategyInit = StrategySelector.at(Text(AlgorithName));
 
 	std::vector<std::unique_ptr<SinglePatternSearch>> SearchStrategies;
 	SearchStrategies.reserve(1024);
@@ -190,109 +192,88 @@ int main(int argc, char** argv)
 			PrintUsage();
 			return 1;
 		}
-
 		while (fgets(buffer, BufferSize, fp))
 		{
-			PatternList.emplace_back(PatternArg);
-			SearchStrategies.emplace_back(Strategy.get());
-			if (UsingWuManber && PatternList.back().Length() > 64)
+			Text Pattern(buffer);
+			if (UsingWuManber && Pattern.Length() > 64)
 			{
 				fprintf(stderr,"Warning: skiping search for \"%s\", wu_manber does not support large patterns.\n", PatternList.back().GetData());
-				PatternList.pop_back();
-				SearchStrategies.pop_back();
 			}
-			SearchStrategies.back()->Init(PatternList.back(), EditDistance);
+			else
+			{
+				PatternList.emplace_back(std::move(Pattern));
+				if (!UsingAhoCorasick) SearchStrategies.emplace_back(StrategyInit());
+			}
+			if (!UsingAhoCorasick) SearchStrategies.back()->Init(PatternList.back(), EditDistance);
 		}
-
 		fclose(fp);
 	}
 	else 
 	{
 		PatternList.emplace_back(PatternArg);
-		SearchStrategies.emplace_back(Strategy.get());
+		if (!UsingAhoCorasick) SearchStrategies.emplace_back(StrategyInit());
 		if (UsingWuManber && PatternList.back().Length() > 64)
 		{
-			fprintf(stderr,"Warning: skiping search for \"%s\", wu_manber does not support large patterns.\n", PatternList.back().GetData());
+			fprintf(stderr,"Warning: skiping pattern \"%s\", wu_manber does not support large patterns.\n", PatternList.back().GetData());
 			return 0;
 		}
-		SearchStrategies.back()->Init(PatternList.back(), EditDistance);
+		if (!UsingAhoCorasick) SearchStrategies.back()->Init(PatternList.back(), EditDistance);
 	}
-
-	// FILE* fl = fopen(argv[optind], "r");
-	// fl = fopen("./shakespeare_all_texts_lowercase.txt", "r");
-
-	// if (fl == NULL)
-	// {
-	// 	fprintf(stderr,"File %s does not exist\n", argv[optind]);
-	// 	// PrintUsage();
-	// 	// return 1;
-	// }
-
-	// Organizar loop: Para toda FileList, percorrer toda a PatternList
-	// Diferenciar SinglePatternSearch e Aho 
-
-	long long OccAmount = 0;
+	
+	long long TotalOccurrences = 0;
+	long long LineOccurences = 0;
 
 	// BenchmarkTimer benchmark;
 
 	if (UsingAhoCorasick)
 	{
-		// AhoCorasick::Init(PatternList);
-	}
-	else 
-	{
-		// Setar para todas as instâncias de algoritmos
+		AhoCorasick::BuildFSM(PatternList);
 	}
 
-	for (const Text& File : FileList)
 	{
-		FILE *fp = fopen(File.GetData(), "r");
-		
-		if (fp == NULL)
+		// BenchmarkTimer bench;
+		for (const Text& File : FileList)
 		{
-			fprintf(stderr,"Warning: skiping \"%s\", text file does not exist\n", File.GetData());
-			continue;
-		}
-		
-		while (fgets(buffer, BufferSize, fp))
-		{
-			// printf("%s", buffer);
-			Text text(buffer, BufferSize);
+			FILE *fp = fopen(File.GetData(), "r");
 			
-			if (UsingAhoCorasick)
+			if (fp == NULL)
 			{
-				// AhoCorasick::Search(...);
+				fprintf(stderr,"Warning: skiping file \"%s\", text file does not exist\n", File.GetData());
+				continue;
 			}
-			else 
+			
+			while (fgets(buffer, BufferSize, fp))
 			{
-				for (const Text& Pattern : PatternList)
+				Text text(buffer, BufferSize); // Borrow pointer
+				
+				if (UsingAhoCorasick)
 				{
-					// rebuild
-					// Não vai dar pra ser estático :(
-					// std::vector<size_t>Occ = SinglePatternSearch(text, Pattern, EditDistance, false);
+					std::vector<std::pair<size_t, size_t>> Occurrences = AhoCorasick::Search(text, PatternList);
+					LineOccurences = Occurrences.size();
+					TotalOccurrences += LineOccurences;
+				}
+				else 
+				{
+					for (int i = 0; i < PatternList.size(); i++)
+					{
+						std::vector<size_t> Occurrences = SearchStrategies[i]->Search(text, PatternList[i], EditDistance);
+						LineOccurences = Occurrences.size();
+						TotalOccurrences += LineOccurences;	
+					}
+				}
+
+				if (LineOccurences != 0 && !PrintCount)
+				{
+					printf("%s\n", buffer);
 				}
 			}
 			
-			// std::vector<size_t>Occ = std::move(SinglePatternSearch(text, patt, EditDistance, false));
-			// const std::vector<std::vector<size_t>> OccSet = AhoCorasick::Search(text, PatternSet);
-
-			// other += Occ.size();
-			
-			// for (auto& vec : OccSet)
-			// {
-			// 	OccAmount += vec.size();
-			// }
+			fclose(fp);
 		}
-
-		fclose(fp);
-		// std::vector<Text> PatternSet = { "love", "death", "conscience", "romeo", "juliet" };
-		
 	}
-
-	printf("Found %lld occurences\n", OccAmount);
-	// printf("%zu\n", other);
-
-	// fclose(fl);
+	
+	if (PrintCount)
+		printf("%lld\n", TotalOccurrences);
 	
 	return 0;
 }

@@ -4,6 +4,7 @@
 
 void BoyerMoore::GetBadChar(const Text& pattern)
 {
+	BadChar.assign(ALPHABET_SIZE, -1);
 	for (int i = 0; i < pattern.Length(); i++)
 	{
 		BadChar[pattern[i]] = i;

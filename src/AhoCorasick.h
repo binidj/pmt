@@ -17,14 +17,9 @@ private:
 	};
 
 	static std::vector<State> FSM;
-
-	static void BuildFSM(const std::vector<Text>& PatternSet);
-
 	static void BuildGoTo(const std::vector<Text>& PatternSet);
-
 	static void BuildFail(const std::vector<Text>& PatternSet);
-	
 public:
-	// TODO: optimize this function
-    static const std::vector<std::pair<size_t, size_t>> Search(const Text& text, const std::vector<Text>& PatternSet, const bool Rebuild = false);
+    static void BuildFSM(const std::vector<Text>& PatternSet);
+	static const std::vector<std::pair<size_t, size_t>> Search(const Text& text, const std::vector<Text>& PatternSet);
 };

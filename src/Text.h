@@ -9,6 +9,7 @@ private:
     char* Data;
     size_t Size;
     bool Borrow = false;
+    void RemoveLineFeed();
 public:
     void Clear();
     const size_t Length() const;

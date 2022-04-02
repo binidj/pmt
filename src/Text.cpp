@@ -84,6 +84,7 @@ Text::Text(const char* Buffer)
 	Size = strlen(Buffer);
 	Data = new char[Size + 1];
 	memcpy(Data, Buffer, Size + 1);
+	RemoveLineFeed();
 }
 
 Text::Text(char* Buffer, const int BufferSize)
@@ -92,7 +93,16 @@ Text::Text(char* Buffer, const int BufferSize)
 	Size = strlen(Buffer);
 	Data = Buffer;
 	Borrow = true;
+	RemoveLineFeed();
 	// memcpy(Data, Buffer, Size + 1);
+}
+
+void Text::RemoveLineFeed()
+{
+	if (Size > 0 && Data[Size-1] == '\n')
+	{
+		Data[Size-1] = '\0';
+	}
 }
 
 bool operator<(const Text &Lhs, const Text &Rhs)

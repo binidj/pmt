@@ -88,7 +88,12 @@ void AhoCorasick::BuildFail(const std::vector<Text>& PatternSet)
 				}
 
 				FSM[Successor].Fail = FSM[Border].GoTo[CharIndex];
-
+				
+				// if (!FSM[FSM[Successor].Fail].Occurences.empty())
+				// {
+				// 	FSM[Successor].Occurences.reserve(FSM[Successor].Occurences.size() + FSM[FSM[Successor].Fail].Occurences.size());
+				// }
+				
 				for (const int PatternIndex : FSM[FSM[Successor].Fail].Occurences)
 				{
 					FSM[Successor].Occurences.emplace_back(PatternIndex);
@@ -98,10 +103,9 @@ void AhoCorasick::BuildFail(const std::vector<Text>& PatternSet)
 	}
 }
 
-const std::vector<std::pair<size_t, size_t>> AhoCorasick::Search(const Text& text, const std::vector<Text>& PatternSet)
+const std::list<std::pair<size_t, size_t>> AhoCorasick::Search(const Text& text, const std::vector<Text>& PatternSet)
 {
-	std::vector<std::pair<size_t, size_t>> OccurencesSet;
-	OccurencesSet.reserve(PatternSet.size());
+	std::list<std::pair<size_t, size_t>> OccurencesSet;
 
 	int cur = 0;
 

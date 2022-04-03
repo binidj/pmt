@@ -28,6 +28,7 @@ void KMP::Init(const Text& pattern, const int EditDistance)
 const std::vector<size_t> KMP::Search(const Text& text, const Text& pattern, const int EditDistance)
 {
 	std::vector<size_t> Occurences;
+	// Occurences.reserve(text.Length());
 
 	int i = 0, j = 0;
 	int Limit = (int)text.Length() - (int)pattern.Length();

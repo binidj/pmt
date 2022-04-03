@@ -22,6 +22,7 @@ void Sellers::Init(const Text& pattern, const int EditDistance)
 const std::vector<size_t> Sellers::Search(const Text& text, const Text& pattern, const int EditDistance)
 {
 	std::vector<size_t> Occurences;
+	// Occurences.reserve(text.Length());
 	
 	std::iota(Column.begin(), Column.end(), 0);
 

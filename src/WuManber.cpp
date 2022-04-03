@@ -5,7 +5,7 @@ void WuManber::GetCharMasks(const Text& pattern)
 	CharMasks.resize(ALPHABET_SIZE, -1);
 	for (int i = 0; i < pattern.Length(); i++)
 	{
-		CharMasks[pattern[i]] &= ~(1ULL << (unsigned long long)i);// .set(i, 0);
+		CharMasks[pattern[i]] &= ~(1ULL << (unsigned long long)i);
 	}
 }
 
@@ -19,6 +19,7 @@ void WuManber::Init(const Text& pattern, const int EditDistance)
 const std::vector<size_t> WuManber::Search(const Text& text, const Text& pattern, const int EditDistance)
 {
 	std::vector<size_t> Occurences;
+	// Occurences.reserve(text.Length());
 	
 	Errors[0] = -1;
 	
@@ -37,7 +38,7 @@ const std::vector<size_t> WuManber::Search(const Text& text, const Text& pattern
 		
 		Errors.swap(NextErrors);
 
-		if ((Errors[EditDistance] & (1ULL << (unsigned long long)(pattern.Length() - 1))) == 0) // !Errors[EditDistance].test(pattern.Length() - 1)
+		if ((Errors[EditDistance] & (1ULL << (unsigned long long)(pattern.Length() - 1))) == 0)
 		{
 			Occurences.emplace_back(i);
 		}

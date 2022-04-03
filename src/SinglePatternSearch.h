@@ -1,6 +1,7 @@
 #pragma once
 #include "Text.h"
 #include <vector>
+#include <list>
 
 class SinglePatternSearch
 {

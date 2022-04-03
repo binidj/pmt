@@ -11,6 +11,7 @@ private:
     std::vector<int> GoodSuffix;
     void GetBadChar(const Text& pattern);
     void GetGoodSuffix(const Text& pattern);
+    std::vector<int> GetBorder(const Text& pattern);
 public:
     void Init(const Text& pattern, const int EditDistance);
     const std::vector<size_t> Search(const Text& text, const Text& pattern, const int EditDistance);

@@ -209,9 +209,12 @@ int main(int argc, char** argv)
 	long long TotalOccurrences = 0;
 	long long TotalLines = 0;
 
+	std::vector<size_t> SinglePatternOccurrences;
+	std::list<std::pair<size_t, size_t>> MultiplePatternOccurrences;
+
 	{
 		// BenchmarkTimer bench;
-
+		
 		if (UsingAhoCorasick)
 		{
 			AhoCorasick::BuildFSM(PatternList);
@@ -234,16 +237,16 @@ int main(int argc, char** argv)
 
 				if (UsingAhoCorasick)
 				{
-					std::vector<std::pair<size_t, size_t>> Occurrences = AhoCorasick::Search(text, PatternList);
-					LineOccurences = Occurrences.size();
+					MultiplePatternOccurrences = AhoCorasick::Search(text, PatternList);
+					LineOccurences = MultiplePatternOccurrences.size();
 					TotalOccurrences += LineOccurences;
 				}
 				else 
 				{
 					for (int i = 0; i < PatternList.size(); i++)
 					{
-						std::vector<size_t> Occurrences = SearchStrategies[i]->Search(text, PatternList[i], EditDistance);
-						LineOccurences = Occurrences.size();
+						SinglePatternOccurrences = SearchStrategies[i]->Search(text, PatternList[i], EditDistance);
+						LineOccurences = SinglePatternOccurrences.size();
 						TotalOccurrences += LineOccurences;
 					}
 				}

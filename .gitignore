@@ -16,3 +16,4 @@ shakespeare_all_texts_lowercase.txt
 src/pmt
 bin/
 test.txt
+test_data/

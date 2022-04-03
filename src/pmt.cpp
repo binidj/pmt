@@ -123,7 +123,7 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	static const int BufferSize = 1024;
+	static const int BufferSize = 1024 * 1024 * 1024;
 	static char buffer[BufferSize];
 	
 	std::vector<Text> FileList;

@@ -137,13 +137,14 @@ int main(int argc, char** argv)
 	if (strcmp(AlgorithName, "") == 0)
 		strcpy(AlgorithName, "boyer_moore");
 
+	bool UsingSlidingWindow = strcmp(AlgorithName, "sliding_window") == 0;
 	bool UsingKmp = strcmp(AlgorithName, "kmp") == 0;
 	bool UsingBoyerMoore = strcmp(AlgorithName, "boyer_moore") == 0;
 	bool UsingSellers = strcmp(AlgorithName, "sellers") == 0;
 	bool UsingWuManber = strcmp(AlgorithName, "wu_manber") == 0;
 	bool UsingAhoCorasick = strcmp(AlgorithName, "aho_corasick") == 0;
 
-	const bool UsingSomeAlgorithm = UsingKmp + UsingBoyerMoore + UsingSellers + UsingWuManber + UsingAhoCorasick;
+	const bool UsingSomeAlgorithm = UsingSlidingWindow + UsingKmp + UsingBoyerMoore + UsingSellers + UsingWuManber + UsingAhoCorasick;
 	if (!UsingSomeAlgorithm)
 	{
 		fprintf(stderr,"Error: Algorithm not supported/found\n");
@@ -153,6 +154,7 @@ int main(int argc, char** argv)
 
 	static const std::map<Text, std::function<std::unique_ptr<SinglePatternSearch>()>> StrategySelector = 
 	{
+		{"sliding_window", []() -> std::unique_ptr<SlidingWindow> { return std::make_unique<SlidingWindow>(); }},
 		{"boyer_moore", []() -> std::unique_ptr<BoyerMoore> { return std::make_unique<BoyerMoore>(); }},
 		{"kmp", []() -> std::unique_ptr<KMP> { return std::make_unique<KMP>(); }},
 		{"sellers", []() -> std::unique_ptr<Sellers> { return std::make_unique<Sellers>(); }},

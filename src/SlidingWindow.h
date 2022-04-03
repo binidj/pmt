@@ -1,9 +1,11 @@
 #pragma once
 #include <vector>
 #include "Text.h"
+#include "SinglePatternSearch.h"
 
-class SlidingWindow
+class SlidingWindow : public SinglePatternSearch
 {
 public:
-    static const std::vector<size_t> Search(const Text& text, const Text& pattern);
+    void Init(const Text& pattern, const int EditDistance);
+    const std::vector<size_t> Search(const Text& text, const Text& pattern, const int EditDistance);
 };

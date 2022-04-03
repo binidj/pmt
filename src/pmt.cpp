@@ -217,6 +217,7 @@ int main(int argc, char** argv)
 		
 		if (UsingAhoCorasick)
 		{
+			// BenchmarkTimer bench;
 			AhoCorasick::BuildFSM(PatternList);
 		}
 
@@ -233,27 +234,27 @@ int main(int argc, char** argv)
 			while (fgets(buffer, BufferSize, fp))
 			{
 				Text text(buffer, BufferSize); // Borrow pointer
-				long long LineOccurences = 0;
+				bool HasOccurences = false;
 
 				if (UsingAhoCorasick)
 				{
 					MultiplePatternOccurrences = AhoCorasick::Search(text, PatternList);
-					LineOccurences = MultiplePatternOccurrences.size();
-					TotalOccurrences += LineOccurences;
+					HasOccurences = !MultiplePatternOccurrences.empty();
+					TotalOccurrences += MultiplePatternOccurrences.size();
 				}
 				else 
 				{
 					for (int i = 0; i < PatternList.size(); i++)
 					{
 						SinglePatternOccurrences = SearchStrategies[i]->Search(text, PatternList[i], EditDistance);
-						LineOccurences = SinglePatternOccurrences.size();
-						TotalOccurrences += LineOccurences;
+						HasOccurences |= !SinglePatternOccurrences.empty();
+						TotalOccurrences += SinglePatternOccurrences.size();
 					}
 				}
 
-				if (LineOccurences != 0 && !PrintCount)
+				if (HasOccurences && !PrintCount)
 					printf("%s\n", buffer);
-				if (LineOccurences != 0)
+				if (HasOccurences)
 					TotalLines += 1;
 			}
 			

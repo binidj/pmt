@@ -17,3 +17,4 @@ src/pmt
 bin/
 test.txt
 test_data/
+build/

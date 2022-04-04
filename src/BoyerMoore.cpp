@@ -34,14 +34,16 @@ void BoyerMoore::GetGoodSuffix(const Text& pattern)
 
 void BoyerMoore::Init(const Text& pattern, const int EditDistance)
 {
+	Occurences.resize(1024);
 	GetBadChar(pattern);
 	GetGoodSuffix(pattern);
 }
 
-const std::vector<size_t> BoyerMoore::Search(const Text& text, const Text& pattern, const int EditDistance)
+const int BoyerMoore::Search(const Text& text, const Text& pattern, const int EditDistance)
 {
-	std::vector<size_t> Occurences;
+	// std::vector<size_t> Occurences;
 	// Occurences.reserve(text.Length());
+	CurrentOcc = 0;
 
 	int i = 0;
 	int Limit = (int)text.Length() - (int)pattern.Length();
@@ -57,8 +59,12 @@ const std::vector<size_t> BoyerMoore::Search(const Text& text, const Text& patte
 
 		if (j < 0)
 		{
-			Occurences.emplace_back(i);
+			if (CurrentOcc != Occurences.size())
+				Occurences[CurrentOcc] = 1;
+			else
+				Occurences.emplace_back(i);
 			i += GoodSuffix.back();
+			CurrentOcc += 1;
 		}
 		else
 		{
@@ -66,5 +72,5 @@ const std::vector<size_t> BoyerMoore::Search(const Text& text, const Text& patte
 		}
 	}
 
-	return Occurences;
+	return CurrentOcc;
 }

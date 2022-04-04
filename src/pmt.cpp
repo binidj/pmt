@@ -217,7 +217,7 @@ int main(int argc, char** argv)
 	long long TotalOccurrences = 0;
 	long long TotalLines = 0;
 
-	std::vector<size_t> SinglePatternOccurrences;
+	// std::vector<size_t> SinglePatternOccurrences;
 	// std::vector<std::pair<size_t, size_t>> MultiplePatternOccurrences;
 
 	{
@@ -255,9 +255,9 @@ int main(int argc, char** argv)
 				{
 					for (int i = 0; i < PatternList.size(); i++)
 					{
-						SinglePatternOccurrences = SearchStrategies[i]->Search(text, PatternList[i], EditDistance);
-						HasOccurences |= !SinglePatternOccurrences.empty();
-						TotalOccurrences += SinglePatternOccurrences.size();
+						int SinglePatternOccurrences = SearchStrategies[i]->Search(text, PatternList[i], EditDistance);
+						HasOccurences |= SinglePatternOccurrences != 0;
+						TotalOccurrences += SinglePatternOccurrences;
 					}
 				}
 

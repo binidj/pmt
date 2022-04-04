@@ -22,13 +22,16 @@ std::vector<int> KMP::GetBorder(const Text& pattern)
 
 void KMP::Init(const Text& pattern, const int EditDistance)
 {
+	Occurences.resize(1024);
 	Border = GetBorder(pattern);
 }
 
-const std::vector<size_t> KMP::Search(const Text& text, const Text& pattern, const int EditDistance)
+const int KMP::Search(const Text& text, const Text& pattern, const int EditDistance)
 {
-	std::vector<size_t> Occurences;
+	// std::vector<size_t> Occurences;
 	// Occurences.reserve(text.Length());
+
+	CurrentOcc = 0;
 
 	int i = 0, j = 0;
 	int Limit = (int)text.Length() - (int)pattern.Length();
@@ -42,12 +45,16 @@ const std::vector<size_t> KMP::Search(const Text& text, const Text& pattern, con
 		
 		if (j == pattern.Length())
 		{
-			Occurences.emplace_back(i);
+			if (CurrentOcc != Occurences.size())
+				Occurences[CurrentOcc] = 1;
+			else
+				Occurences.emplace_back(i);
+			CurrentOcc += 1;
 		}
 
 		i += j - Border[j];
 		j = std::max(0, Border[j]);
 	}
 
-	return Occurences;
+	return CurrentOcc;
 }

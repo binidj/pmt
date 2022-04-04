@@ -2,12 +2,13 @@
 
 void SlidingWindow::Init(const Text& pattern, const int EditDistance)
 {
-	return;
+	Occurences.resize(1024);
 }
 
-const std::vector<size_t> SlidingWindow::Search(const Text& text, const Text& pattern, const int EditDistance)
+const int SlidingWindow::Search(const Text& text, const Text& pattern, const int EditDistance)
 {
-	std::vector<size_t> Occurences;
+	CurrentOcc = 0;
+	// std::vector<size_t> Occurences;
 	// Occurences.reserve(text.Length());
 
 	int Limit = (int)text.Length() - (int)pattern.Length();
@@ -24,8 +25,12 @@ const std::vector<size_t> SlidingWindow::Search(const Text& text, const Text& pa
 		}
 		if (j == pattern.Length())
 		{
-			Occurences.emplace_back(i);
+			if (CurrentOcc != Occurences.size())
+				Occurences[CurrentOcc] = i;
+			else
+				Occurences.emplace_back(i);
+			CurrentOcc += 1;
 		}
 	}
-	return Occurences;
+	return CurrentOcc;
 }

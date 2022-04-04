@@ -8,87 +8,178 @@ do
     SET=$(expr $SET + 1)
     echo "# SET $SET of trial $TRIAL"
     
-    # for ALGORITHM in sliding_window kmp boyer_moore wu_manber
-    # do
-    #     WORD=0
-    #     while read PATTERN 
-    #     do
-    #         WORD=$(expr $WORD + 1)
-    #         echo Doing $ALGORITHM with word $WORD
-    #         if [ "$ALGORITHM" != "grep" ]; 
-    #         then
-    #             (time build/src/pmt -a $ALGORITHM -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM
-    #         else
-    #             (time grep -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM
-    #         fi
-    #     done < test_data/patterns/set_$SET.txt
-    # done
-    
-    SET=$(expr $SET + 1)
-    echo "# SET $SET of trial $TRIAL"
-
-    # for ALGORITHM in sliding_window kmp boyer_moore wu_manber
-    # do
-    #     WORD=0
-    #     while read PATTERN 
-    #     do
-    #         WORD=$(expr $WORD + 1)
-    #         echo Doing $ALGORITHM with word $WORD
-    #         if [ "$ALGORITHM" != "grep" ]; 
-    #         then
-    #             (time build/src/pmt -a $ALGORITHM -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM
-    #         else
-    #             (time grep -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM
-    #         fi
-    #     done < test_data/patterns/set_$SET.txt
-    # done
-
-    SET=$(expr $SET + 1)
-    echo "# SET $SET of trial $TRIAL"
-
-    # for ALGORITHM in sliding_window kmp boyer_moore wu_manber
-    # do
-    #     WORD=0
-    #     while read PATTERN 
-    #     do
-    #         WORD=$(expr $WORD + 1)
-    #         echo Doing $ALGORITHM with word $WORD
-    #         if [ "$ALGORITHM" != "grep" ]; 
-    #         then
-    #             (time build/src/pmt -a $ALGORITHM -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM
-    #         else
-    #             (time grep -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM
-    #         fi
-    #     done < test_data/patterns/set_$SET.txt
-    # done
-    
-    SET=$(expr $SET + 1)
-    echo "# SET $SET of trial $TRIAL"
-    
-    # echo FROM $PWD
-    cd test_data/patterns/set_4
-    # echo TO $PWD
-
-    for ALGORITHM in boyer_moore aho_corasick grep
+    for ALGORITHM in sliding_window kmp boyer_moore wu_manber
     do
         WORD=0
-        for FILE in *
+        while read PATTERN 
+        do
+            WORD=$(expr $WORD + 1)
+            echo Doing $ALGORITHM with word $WORD
+            if [ "$ALGORITHM" != "grep" ]; 
+            then
+                (time build/src/pmt -a $ALGORITHM -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM".txt"
+            else
+                (time grep -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM".txt"
+            fi
+        done < test_data/patterns/set_$SET.txt
+    done
+    
+    SET=$(expr $SET + 1)
+    echo "# SET $SET of trial $TRIAL"
+
+    for ALGORITHM in sliding_window kmp boyer_moore wu_manber
+    do
+        WORD=0
+        while read PATTERN 
+        do
+            WORD=$(expr $WORD + 1)
+            echo Doing $ALGORITHM with word $WORD
+            if [ "$ALGORITHM" != "grep" ]; 
+            then
+                (time build/src/pmt -a $ALGORITHM -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM".txt"
+            else
+                (time grep -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM".txt"
+            fi
+        done < test_data/patterns/set_$SET.txt
+    done
+
+    SET=$(expr $SET + 1)
+    echo "# SET $SET of trial $TRIAL"
+
+    for ALGORITHM in sliding_window kmp boyer_moore wu_manber
+    do
+        WORD=0
+        while read PATTERN 
+        do
+            WORD=$(expr $WORD + 1)
+            echo Doing $ALGORITHM with word $WORD
+            if [ "$ALGORITHM" != "grep" ]; 
+            then
+                (time build/src/pmt -a $ALGORITHM -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM".txt"
+            else
+                (time grep -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM".txt"
+            fi
+        done < test_data/patterns/set_$SET.txt
+    done
+    
+    SET=$(expr $SET + 1)
+    echo "# SET $SET of trial $TRIAL"
+    
+    echo FROM $PWD
+    cd test_data/patterns/set_4
+    echo TO $PWD
+
+    for ALGORITHM in aho_corasick grep aho_corasick_2 grep_single
+    do
+        WORD=0
+        for FILE in *.txt
         do
             WORD=$(expr $WORD + 1)
             echo Doing $ALGORITHM with file $FILE
-            if [ "$ALGORITHM" != "grep" ]; 
+            if [ "$ALGORITHM" = "aho_corasick" ]; 
             then
-                (time ../../../build/src/pmt -p $FILE -a $ALGORITHM -c test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM
-            else
-                (time grep -f $FILE -c test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM
-            fi 
+                (time ../../../build/src/pmt -p $FILE -a $ALGORITHM -c ../../../test_data/english_1024MB.txt) 2>&1 | tee "../../../test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM".txt"
+            fi
+            if [ "$ALGORITHM" = "aho_corasick_2" ];
+            then
+                (time ../../../build/src/pmt -p $FILE -a "aho_corasick" -c -n ../../../test_data/english_1024MB.txt) 2>&1 | tee "../../../test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM".txt"
+            fi
+            if [ "$ALGORITHM" = "grep" ];
+            then
+                (time grep -f $FILE -c ../../../test_data/english_1024MB.txt) 2>&1 | tee "../../../test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM".txt"
+            fi
+            if [ "$ALGORITHM" = "grep_single" ];
+            then
+                SUBWORD=0
+                while read PATTERN
+                do
+                    SUBWORD=$(expr $SUBWORD + 1)
+                    (time grep -c $PATTERN ../../../test_data/english_1024MB.txt) 2>&1 | tee "../../../test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$SUBWORD"_"$ALGORITHM".txt"
+                done < $FILE
+            fi
         done
     done
 
-    # echo FROM $PWD
+    echo FROM $PWD
     cd ../../../
-    # echo TO $PWD
+    echo TO $PWD
     
+    SET=$(expr $SET + 1)
+    echo "# SET $SET of trial $TRIAL"
+    
+    for ALGORITHM in sellers wu_manber agrep
+    do
+        WORD=0
+        while read PATTERN 
+        do
+            WORD=$(expr $WORD + 1)
+            echo Doing $ALGORITHM with word $WORD
+            if [ "$ALGORITHM" != "agrep" ]; 
+            then
+                (time build/src/pmt -a $ALGORITHM -e 4 -c $PATTERN test_data/sources_200MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM".txt"
+            else
+                (time agrep -4 -c $PATTERN test_data/sources_200MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM".txt"
+            fi
+        done < test_data/patterns/set_$SET.txt
+    done
+
+    SET=$(expr $SET + 1)
+    echo "# SET $SET of trial $TRIAL"
+
+    for ALGORITHM in sellers wu_manber agrep
+    do
+        WORD=0
+        while read PATTERN 
+        do
+            WORD=$(expr $WORD + 1)
+            echo Doing $ALGORITHM with word $WORD
+            if [ "$ALGORITHM" != "agrep" ]; 
+            then
+                (time build/src/pmt -a $ALGORITHM -e 4 -c $PATTERN test_data/dna_200MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM".txt"
+            else
+                (time agrep -4 -c $PATTERN test_data/dna_200MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM".txt"
+            fi
+        done < test_data/patterns/set_$SET.txt
+    done
+
+    SET=$(expr $SET + 1)
+    echo "# SET $SET of trial $TRIAL"
+
+    for ALGORITHM in sellers wu_manber
+    do
+        WORD=0
+        while read PATTERN 
+        do
+            WORD=$(expr $WORD + 1)
+            echo Doing $ALGORITHM with word $WORD
+            if [ "$ALGORITHM" != "agrep" ]; 
+            then
+                (time build/src/pmt -a $ALGORITHM -e 20 -c $PATTERN test_data/sources_200MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM".txt"
+            else
+                (time agrep -5 -c $PATTERN test_data/dna_200MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM".txt"
+            fi
+        done < test_data/patterns/set_$SET.txt
+    done
+
+    SET=$(expr $SET + 1)
+    echo "# SET $SET of trial $TRIAL"
+
+    for ALGORITHM in sellers wu_manber
+    do
+        WORD=0
+        while read PATTERN 
+        do
+            WORD=$(expr $WORD + 1)
+            echo Doing $ALGORITHM with word $WORD
+            if [ "$ALGORITHM" != "agrep" ]; 
+            then
+                (time build/src/pmt -a $ALGORITHM -e 20 -c $PATTERN test_data/dna_200MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM".txt"
+            else
+                (time agrep -5 -c $PATTERN test_data/dna_200MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM".txt"
+            fi
+        done < test_data/patterns/set_$SET.txt
+    done
+
     # padroes unicos exatos X
         # padroes pequenos de 1 a 60 (todos os algos - sellers) X
         
@@ -98,21 +189,19 @@ do
 
     # multiplos padroes exatos
         
-        # testar varias palavras da lingua inglesa
+        # testar varias palavras da lingua inglesa X
 
-    # padroes unicos aproximados
+    # padroes unicos aproximados X
 
-        # ingles
+        # ingles X
 
-            # com erro pequeno, ate 5
+            # com erro pequeno, ate 5 X
 
-            # com erro maximo
+            # com erro maximo X
         
         # dna
 
-            # com erro pequeno, ate 5
+            # com erro pequeno, ate 5 X
 
-            # com erro maximo
+            # com erro maximo X
 done
-
-# for 

@@ -1,52 +1,118 @@
-bash compile.sh
+#!/bin/bash
 
-# fazer os sets de teste
-# padrões pequenos
-# time build/src/pmt -c "i" test_data/english_1024MB.txt
-# time build/src/pmt -c "my" test_data/english_1024MB.txt
-# time build/src/pmt -c "thy" test_data/english_1024MB.txt
-# time build/src/pmt -c "love" test_data/english_1024MB.txt
-time build/src/pmt -c "thick" test_data/english_1024MB.txt
-time build/src/pmt -c "afraid" test_data/english_1024MB.txt
-time build/src/pmt -c "memento" test_data/english_1024MB.txt
-time build/src/pmt -c "fearless" test_data/english_1024MB.txt
-time build/src/pmt -c "resources" test_data/english_1024MB.txt
-time build/src/pmt -c "characters" test_data/english_1024MB.txt
+echo "# INIT TEST SCRIPT"
 
-# time build/src/pmt -c "i" test_data/english_1024MB.txt
-# time build/src/pmt -c "my" test_data/english_1024MB.txt
-# time build/src/pmt -c "thy" test_data/english_1024MB.txt
-# time build/src/pmt -c "love" test_data/english_1024MB.txt
-# time build/src/pmt -c "thick" test_data/english_1024MB.txt
-time build/src/pmt -a kmp -c "afraid" test_data/english_1024MB.txt
-time build/src/pmt -a kmp -c "memento" test_data/english_1024MB.txt
-time build/src/pmt -a kmp -c "fearless" test_data/english_1024MB.txt
-time build/src/pmt -a kmp -c "resources" test_data/english_1024MB.txt
-time build/src/pmt -a kmp -c "characters" test_data/english_1024MB.txt
+for TRIAL in 1 2 3
+do
+    SET=0    
+    SET=$(expr $SET + 1)
+    echo "# SET $SET of trial $TRIAL"
+    
+    # for ALGORITHM in sliding_window kmp boyer_moore wu_manber
+    # do
+    #     WORD=0
+    #     while read PATTERN 
+    #     do
+    #         WORD=$(expr $WORD + 1)
+    #         echo Doing $ALGORITHM with word $WORD
+    #         if [ "$ALGORITHM" != "grep" ]; 
+    #         then
+    #             (time build/src/pmt -a $ALGORITHM -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM
+    #         else
+    #             (time grep -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM
+    #         fi
+    #     done < test_data/patterns/set_$SET.txt
+    # done
+    
+    SET=$(expr $SET + 1)
+    echo "# SET $SET of trial $TRIAL"
 
-# time build/src/pmt -c "i" test_data/english_1024MB.txt
-# time build/src/pmt -c "my" test_data/english_1024MB.txt
-# time build/src/pmt -c "thy" test_data/english_1024MB.txt
-# time build/src/pmt -c "love" test_data/english_1024MB.txt
-# time build/src/pmt -c "thick" test_data/english_1024MB.txt
-time build/src/pmt -a aho_corasick -c "afraid" test_data/english_1024MB.txt
-time build/src/pmt -a aho_corasick -c "memento" test_data/english_1024MB.txt
-time build/src/pmt -a aho_corasick -c "fearless" test_data/english_1024MB.txt
-time build/src/pmt -a aho_corasick -c "resources" test_data/english_1024MB.txt
-time build/src/pmt -a aho_corasick -c "characters" test_data/english_1024MB.txt
+    # for ALGORITHM in sliding_window kmp boyer_moore wu_manber
+    # do
+    #     WORD=0
+    #     while read PATTERN 
+    #     do
+    #         WORD=$(expr $WORD + 1)
+    #         echo Doing $ALGORITHM with word $WORD
+    #         if [ "$ALGORITHM" != "grep" ]; 
+    #         then
+    #             (time build/src/pmt -a $ALGORITHM -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM
+    #         else
+    #             (time grep -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM
+    #         fi
+    #     done < test_data/patterns/set_$SET.txt
+    # done
 
-# time build/src/pmt -c "i" test_data/english_1024MB.txt
-# time build/src/pmt -c "my" test_data/english_1024MB.txt
-# time build/src/pmt -c "thy" test_data/english_1024MB.txt
-# time build/src/pmt -c "love" test_data/english_1024MB.txt
-# time build/src/pmt -c "thick" test_data/english_1024MB.txt
-time build/src/pmt -a wu_manber -c "afraid" test_data/english_1024MB.txt
-time build/src/pmt -a wu_manber -c "memento" test_data/english_1024MB.txt
-time build/src/pmt -a wu_manber -c "fearless" test_data/english_1024MB.txt
-time build/src/pmt -a wu_manber -c "resources" test_data/english_1024MB.txt
-time build/src/pmt -a wu_manber -c "characters" test_data/english_1024MB.txt
+    SET=$(expr $SET + 1)
+    echo "# SET $SET of trial $TRIAL"
 
+    # for ALGORITHM in sliding_window kmp boyer_moore wu_manber
+    # do
+    #     WORD=0
+    #     while read PATTERN 
+    #     do
+    #         WORD=$(expr $WORD + 1)
+    #         echo Doing $ALGORITHM with word $WORD
+    #         if [ "$ALGORITHM" != "grep" ]; 
+    #         then
+    #             (time build/src/pmt -a $ALGORITHM -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM
+    #         else
+    #             (time grep -c $PATTERN test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM
+    #         fi
+    #     done < test_data/patterns/set_$SET.txt
+    # done
+    
+    SET=$(expr $SET + 1)
+    echo "# SET $SET of trial $TRIAL"
+    
+    # echo FROM $PWD
+    cd test_data/patterns/set_4
+    # echo TO $PWD
 
-# time build/src/pmt -c "characters" test_data/english_ascii.txt
-# time build/src/pmt -c "love" test_data/english_ascii.txt
-# time build/src/pmt -c "love" test_data/english_ascii.txt
+    for ALGORITHM in boyer_moore aho_corasick grep
+    do
+        WORD=0
+        for FILE in *
+        do
+            WORD=$(expr $WORD + 1)
+            echo Doing $ALGORITHM with file $FILE
+            if [ "$ALGORITHM" != "grep" ]; 
+            then
+                (time ../../../build/src/pmt -p $FILE -a $ALGORITHM -c test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM
+            else
+                (time grep -f $FILE -c test_data/english_1024MB.txt) 2>&1 | tee "test_data/repports/$TRIAL""_"$SET"_"$WORD"_"$ALGORITHM
+            fi 
+        done
+    done
+
+    # echo FROM $PWD
+    cd ../../../
+    # echo TO $PWD
+    
+    # padroes unicos exatos X
+        # padroes pequenos de 1 a 60 (todos os algos - sellers) X
+        
+        # padroes aleatorios de 1 a 80 nas proteinas X
+        
+        # padroes grandes 100 - 1000 nas proteinas X
+
+    # multiplos padroes exatos
+        
+        # testar varias palavras da lingua inglesa
+
+    # padroes unicos aproximados
+
+        # ingles
+
+            # com erro pequeno, ate 5
+
+            # com erro maximo
+        
+        # dna
+
+            # com erro pequeno, ate 5
+
+            # com erro maximo
+done
+
+# for 

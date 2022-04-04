@@ -210,19 +210,20 @@ int main(int argc, char** argv)
 	long long TotalLines = 0;
 
 	std::vector<size_t> SinglePatternOccurrences;
-	std::list<std::pair<size_t, size_t>> MultiplePatternOccurrences;
+	// std::vector<std::pair<size_t, size_t>> MultiplePatternOccurrences;
 
 	{
 		// BenchmarkTimer bench;
 		
 		if (UsingAhoCorasick)
 		{
-			// BenchmarkTimer bench;
+			BenchmarkTimer bench;
 			AhoCorasick::BuildFSM(PatternList);
 		}
 
 		for (const Text& File : FileList)
 		{
+			// BenchmarkTimer bench;
 			FILE *fp = fopen(File.GetData(), "r");
 			
 			if (fp == NULL)
@@ -238,9 +239,10 @@ int main(int argc, char** argv)
 
 				if (UsingAhoCorasick)
 				{
-					MultiplePatternOccurrences = AhoCorasick::Search(text, PatternList);
-					HasOccurences = !MultiplePatternOccurrences.empty();
-					TotalOccurrences += MultiplePatternOccurrences.size();
+					
+					int MultiplePatternOccurrences = AhoCorasick::Search(text, PatternList);
+					HasOccurences = MultiplePatternOccurrences != 0;
+					TotalOccurrences += MultiplePatternOccurrences;
 				}
 				else 
 				{

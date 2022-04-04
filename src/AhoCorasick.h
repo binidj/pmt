@@ -22,5 +22,5 @@ private:
 	static void BuildFail(const std::vector<Text>& PatternSet);
 public:
     static void BuildFSM(const std::vector<Text>& PatternSet);
-	static const std::list<std::pair<size_t, size_t>> Search(const Text& text, const std::vector<Text>& PatternSet);
+	static const int Search(const Text& text, const std::vector<Text>& PatternSet);
 };

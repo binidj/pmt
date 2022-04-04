@@ -80,7 +80,7 @@ void AhoCorasick::BuildFail(const std::vector<Text>& PatternSet)
 		{
 			int Successor = FSM[CurrentState].GoTo[CharIndex];
 
-			if (Successor >= 0)
+			if (Successor > 0)
 			{			
 				Queue.push(Successor);
 				
@@ -92,11 +92,6 @@ void AhoCorasick::BuildFail(const std::vector<Text>& PatternSet)
 				}
 
 				FSM[Successor].Fail = FSM[Border].GoTo[CharIndex];
-				
-				// if (!FSM[FSM[Successor].Fail].Occurences.empty())
-				// {
-				// 	FSM[Successor].Occurences.reserve(FSM[Successor].Occurences.size() + FSM[FSM[Successor].Fail].Occurences.size());
-				// }
 				
 				for (const int PatternIndex : FSM[FSM[Successor].Fail].Occurences)
 				{

@@ -217,15 +217,11 @@ int main(int argc, char** argv)
 	long long TotalOccurrences = 0;
 	long long TotalLines = 0;
 
-	// std::vector<size_t> SinglePatternOccurrences;
-	// std::vector<std::pair<size_t, size_t>> MultiplePatternOccurrences;
-
 	{
-		// BenchmarkTimer bench;
-		
+		// BenchmarkTimer bench;		
 		if (UsingAhoCorasick)
 		{
-			BenchmarkTimer bench;
+			// BenchmarkTimer bench;
 			AhoCorasick::BuildFSM(PatternList);
 		}
 

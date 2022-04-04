@@ -20,8 +20,6 @@ void WuManber::Init(const Text& pattern, const int EditDistance)
 const int WuManber::Search(const Text& text, const Text& pattern, const int EditDistance)
 {
 	CurrentOcc = 0;
-	// std::vector<size_t> Occurences;
-	// Occurences.reserve(text.Length());
 	
 	Errors[0] = -1;
 	

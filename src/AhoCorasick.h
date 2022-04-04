@@ -17,10 +17,12 @@ private:
 		State();
 	};
 
+	static int CurrentOcc;
 	static std::vector<State> FSM;
 	static void BuildGoTo(const std::vector<Text>& PatternSet);
 	static void BuildFail(const std::vector<Text>& PatternSet);
 public:
-    static void BuildFSM(const std::vector<Text>& PatternSet);
-	static const int Search(const Text& text, const std::vector<Text>& PatternSet);
+    static std::vector<std::pair<size_t,size_t>> OccurenceSet;
+	static void BuildFSM(const std::vector<Text>& PatternSet);
+	static int Search(const Text& text, const std::vector<Text>& PatternSet, const bool OptMode);
 };

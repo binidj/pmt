@@ -48,6 +48,7 @@ int main(int argc, char** argv)
 	static char PatternArg[128] = "";
 	static bool PrintCount = false;
 	static bool Help = false;
+	static bool OptAhoCorasick = true;
 
 	static int OptionIndex = 0;
 
@@ -55,12 +56,13 @@ int main(int argc, char** argv)
 	{
 		{"count", no_argument, 0, 'c'},
 		{"help", no_argument, 0, 'h'},
+		{"no_ac_opt", no_argument, 0, 'n'},
 		{"algorithm", required_argument, 0, 'a'},
 		{"pattern", required_argument, 0, 'p'},
 		{"edit", required_argument, 0, 'e'},
 	};
 	
-	while ((Option = getopt_long(argc, argv, "a:ce:hp:", LongOptions, &OptionIndex)) != -1)
+	while ((Option = getopt_long(argc, argv, "a:ce:hnp:", LongOptions, &OptionIndex)) != -1)
 	{
 		switch (Option)
 		{
@@ -82,6 +84,10 @@ int main(int argc, char** argv)
 			
 			case 'h':
 				Help = true;
+				break;
+
+			case 'n':
+				OptAhoCorasick = false;
 				break;
 
 			case '?':
@@ -181,6 +187,8 @@ int main(int argc, char** argv)
 		while (fgets(buffer, BufferSize, fp))
 		{
 			Text Pattern(buffer);
+			if (Pattern.Length() == 0)
+				continue;
 			if (UsingWuManber && Pattern.Length() > 64)
 			{
 				fprintf(stderr,"Warning: skiping search for \"%s\", wu_manber does not support large patterns.\n", PatternList.back().GetData());
@@ -239,8 +247,7 @@ int main(int argc, char** argv)
 
 				if (UsingAhoCorasick)
 				{
-					
-					int MultiplePatternOccurrences = AhoCorasick::Search(text, PatternList);
+					int MultiplePatternOccurrences = AhoCorasick::Search(text, PatternList, OptAhoCorasick);
 					HasOccurences = MultiplePatternOccurrences != 0;
 					TotalOccurrences += MultiplePatternOccurrences;
 				}

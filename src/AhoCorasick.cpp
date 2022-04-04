@@ -9,6 +9,10 @@ AhoCorasick::State::State()
 	Occurences = std::vector<int>();
 }
 
+int AhoCorasick::CurrentOcc = 0;
+
+std::vector<std::pair<size_t,size_t>> AhoCorasick::OccurenceSet = std::vector<std::pair<size_t,size_t>>(1024);
+
 std::vector<AhoCorasick::State> AhoCorasick::FSM = std::vector<State>();
 
 void AhoCorasick::BuildFSM(const std::vector<Text>& PatternSet)
@@ -103,10 +107,9 @@ void AhoCorasick::BuildFail(const std::vector<Text>& PatternSet)
 	}
 }
 
-const int AhoCorasick::Search(const Text& text, const std::vector<Text>& PatternSet)
+int AhoCorasick::Search(const Text& text, const std::vector<Text>& PatternSet, const bool OptMode)
 {
-	int OccurencesSet = 0;
-
+	CurrentOcc = 0;
 	int cur = 0;
 
 	for (int i = 0; i < text.Length(); i++)
@@ -118,12 +121,22 @@ const int AhoCorasick::Search(const Text& text, const std::vector<Text>& Pattern
 		
 		cur = FSM[cur].GoTo[text[i]];
 
-		OccurencesSet += FSM[cur].Occurences.size();
-		// for (const int PatternIndex : FSM[cur].Occurences)
-		// {
-		// 	OccurencesSet += 1;// .emplace_back(PatternIndex, i - (int)PatternSet[PatternIndex].Length() + 1);
-		// }
+		if (OptMode)
+		{
+			CurrentOcc += FSM[cur].Occurences.size();
+		}
+		else 
+		{
+			for (const int PatternIndex : FSM[cur].Occurences)
+			{
+				if (CurrentOcc != OccurenceSet.size())
+					OccurenceSet[CurrentOcc] = {PatternIndex, i - (int)PatternSet[PatternIndex].Length() + 1};
+				else
+					OccurenceSet.emplace_back(PatternIndex, i - (int)PatternSet[PatternIndex].Length() + 1);
+				CurrentOcc += 1;
+			}
+		}
 	}
 
-	return OccurencesSet;
+	return CurrentOcc;
 }

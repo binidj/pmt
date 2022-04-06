@@ -21,14 +21,13 @@ Open the project folder
 Compile the application
 
 ```bash
-  cmake -DCMAKE_BUILD_TYPE=Release ./
-  make
+  sh compile.sh
 ```
 
-Open the compiled file
+Change directory to where the application binary **pmt** is
 
 ```bash
-  cd buil/src
+  cd build/src
 ```
 
 Run it.
@@ -43,17 +42,18 @@ Run it.
 
 | Argument   | Type       | Description                           |
 | :---------- | :--------- | :---------------------------------- |
-| `pattern` | `string` | **Required**. Pattern to be searched. |
-| `textfile` | `path` | **Required**. Text file path. If there is more than one file, brackets or wildcards need to be used. |
+| `pattern` | `string` | **Required** when not using *--pattern* option. Pattern to be searched. |
+| `textfile` | `path` | **Required**. Text file path. More than one text file can be processed with multiple arguments or wildcards. |
 
 ## Extra options
 
 | Command             | Function                                                |
 | --------------------| ---------------------------------------------------------------- |
 | `-e` `--edit emax` | Searches all aproximated ocurrences of the pattern with some distance *emax*
-| `-p` `--pattern patternfile` | Specifies the pattern file *patternfile* that will be used on the search
+| `-p` `--pattern patternfile` | Specifies the *file* from which patterns will be read and used on the search
 | `-a` `--algorithm algorithm_name` | Specifies the algorithm *algorithm_name* that will be used on the pattern search
-| `-c` `--count` | Prints the number of ocurrences of the specified pattern on all the text files.
+| `-c` `--count` | Prints the number of ocurrences of the specified pattern on all text files.
+| `-n` `--noacopt` | Disables optmization for large number of occurences when using *aho_corasick* algoritm.
 | `-h` `--help` | Basic PMT options
 
 

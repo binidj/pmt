@@ -15,28 +15,28 @@
 #include <memory>
 #include <functional>
 
-void PrintHelp()
-{
-	fprintf(stderr, "--------PMT--------\n");
-	fprintf(stderr, "-------IF767-------\n\n");
-	fprintf(stderr, "------FORMATO------\n");
-	fprintf(stderr, "pmt [options] pattern textfile [textfile...]\n");
-	fprintf(stderr, "options - CONFIRA SEÇÃO 'OPÇÕES ADICIONAIS'\n");
-	fprintf(stderr, "patterns - Aho Corasick | BoyerMoore | Sellers | Sliding Window | Wu Manber \n");
-	fprintf(stderr, "textfile - localização do arquivo de texto a ser utilizado.\n");
-	fprintf(stderr, "	OBS: SE FOR UTILIZAR MAIS DE 1 ARQUIVO, É NECESSÁRIO COLOCAR COLCHETES\n");
-	fprintf(stderr, "	EX: pmt 'Sellers' ['file1.txt', 'file2.txt']\n\n");
-	fprintf(stderr, "--OPÇÕES ADICIONAIS--\n");
-	fprintf(stderr, "-e | --edit emax - Localiza todas as ocorrencias aproximadas do padrao a uma distancia maxima emax\n");
-	fprintf(stderr, "-p | --pattern patternfile - Realiza a busca de todos os padroes contidos no arquivo patternfile.\n");
-	fprintf(stderr, "-a | --algorithm algorithm_name - Realiza a busca de padroes usando o algoritmo.\n");
-	fprintf(stderr, "-c | --count - Imprime apenas a quantidade total de ocorrencias do(s) padrao(oes) contidas no(s) arquivo(s) de texto.\n");
-	fprintf(stderr, "-h | --help - Imprime um manual básico de uso da aplicação\n");
-}
-
 void PrintUsage()
 {
+	fprintf(stderr, "\n--------PMT--------\n");
+	fprintf(stderr, "-------IF767-------\n\n");
+	fprintf(stderr, "Usage: pmt [options] pattern textfile [textfile...]\n");
+	fprintf(stderr, "options - check \'pmt --help\' for more information\n");
+	fprintf(stderr, "pattern - pattern to be searched\n");
+	fprintf(stderr, "textfile - text file path.\n");
+	fprintf(stderr, "More than one text file can be processed with multiple arguments or wildcards\n");
+}
 
+void PrintHelp()
+{
+	printf("--ADDITIONAL OPTIONS--\n");
+	printf("-e | --edit emax - Search all ocurrences of the specified pattern with a max distance emax\n");
+	printf("-p | --pattern patternfile - Specifies the file from which patterns will be read and used on the search\n");
+	printf("-a | --algorithm algorithm_name - Specifies the algorith that will be used on the pattern search\n");
+	printf("algorithm_name = sliding_window | kmp | boyer_moore | sellers | wu_manber | aho_corasick\n");
+	printf("-c | --count - Prints the number of ocurrences of the specified pattern on all the text files.\n");
+	printf("-n | --noacopt - disable optmization for large number of occurences when using aho_corasick algoritm\n");
+	printf("-h | --help - Basic PMT options\n");
+	printf("----------------------\n");
 }
 
 int main(int argc, char** argv)
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 	{
 		{"count", no_argument, 0, 'c'},
 		{"help", no_argument, 0, 'h'},
-		{"no_ac_opt", no_argument, 0, 'n'},
+		{"noacopt", no_argument, 0, 'n'},
 		{"algorithm", required_argument, 0, 'a'},
 		{"pattern", required_argument, 0, 'p'},
 		{"edit", required_argument, 0, 'e'},
@@ -268,7 +268,7 @@ int main(int argc, char** argv)
 	}
 	
 	if (PrintCount)
-		printf("%lld occurences on %lld lines\n", TotalOccurrences, TotalLines);
+		printf("%lld\n", TotalOccurrences);
 	
 	return 0;
 }

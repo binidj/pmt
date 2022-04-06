@@ -141,7 +141,25 @@ int main(int argc, char** argv)
 	}
 
 	if (strcmp(AlgorithName, "") == 0)
-		strcpy(AlgorithName, "boyer_moore");
+	{
+		if (EditDistance == 0)
+		{
+			if (HasPatternFile)
+				strcpy(AlgorithName, "aho_corasick");
+			else if (!HasPatternFile && strlen(PatternArg) == 1)
+				strcpy(AlgorithName, "wu_manber");
+			else if (!HasPatternFile)
+				strcpy(AlgorithName, "boyer_moore");
+		}
+		else if (EditDistance != 0)
+		{
+			if (strlen(PatternArg) <= 64)
+				strcpy(AlgorithName, "wu_manber");
+			else
+				strcpy(AlgorithName, "sellers");
+		}
+	}
+		
 
 	bool UsingSlidingWindow = strcmp(AlgorithName, "sliding_window") == 0;
 	bool UsingKmp = strcmp(AlgorithName, "kmp") == 0;

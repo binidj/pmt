@@ -158,8 +158,7 @@ int main(int argc, char** argv)
 			else
 				strcpy(AlgorithName, "sellers");
 		}
-	}
-		
+	}	
 
 	bool UsingSlidingWindow = strcmp(AlgorithName, "sliding_window") == 0;
 	bool UsingKmp = strcmp(AlgorithName, "kmp") == 0;
@@ -269,7 +268,7 @@ int main(int argc, char** argv)
 				{
 					for (int i = 0; i < PatternList.size(); i++)
 					{
-						int SinglePatternOccurrences = SearchStrategies[i]->Search(text, PatternList[i], EditDistance);
+						int SinglePatternOccurrences = SearchStrategies[i]->Search(text, PatternList[i], std::min(EditDistance, (int)PatternList[i].Length()));
 						HasOccurences |= SinglePatternOccurrences != 0;
 						TotalOccurrences += SinglePatternOccurrences;
 					}

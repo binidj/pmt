@@ -24,10 +24,10 @@ Compile the application
   sh compile.sh
 ```
 
-Change directory to where the application binary **pmt** is
+The application binary **pmt** will be at **bin/** folder
 
 ```bash
-  cd build/src
+  cd bin/
 ```
 
 Run it.
